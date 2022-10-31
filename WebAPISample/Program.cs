@@ -1,11 +1,16 @@
-using System.Data.SqlClient;
+ï»¿using System.Data.SqlClient;
 using System;
 using Microsoft.Data.SqlClient;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using WebAPISample.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WebAPISample.Modules.Class;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<cs>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("cs") ?? throw new InvalidOperationException("Connection string 'cs' not found.")));
 
 // Add services to the container.
 
@@ -15,9 +20,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-
-
 
 
 
@@ -35,31 +37,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
-using (var connection = new SqlConnection("Data Source=RBPC11;Initial Catalog=test;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
-{
-    // Ú‘±ŠJŽn
-    connection.Open();
-
-    // SqlCommandFDB‚ÉSQL•¶‚ð‘—M‚·‚é‚½‚ß‚ÌƒIƒuƒWƒFƒNƒg‚ð¶¬
-    // SqlDataReaderF“Ç‚ÝŽæ‚Á‚½ƒf[ƒ^‚ðŠi”[‚·‚é‚½‚ß‚ÌƒIƒuƒWƒFƒNƒg‚ð¶¬
-    using (var command = new SqlCommand("select * from table1", connection))
-    using (var reader = command.ExecuteReader())
-    {
-        // 1s‚²‚Æ‚É“Ç‚ÝŽæ‚éB“Ç‚ÝŽæ‚Á‚½‚çtrue
-        //app.MapGet("/", () => new Class((int)reader[(string?)"value"], (string)reader["str"]));
-        if (!reader.Read())
-            return;
-
-
-        int value = (int)reader[0];
-        string str = (string)reader[1];
-        var c = new Class(value, str);
-        app.MapGet("/DBsample", () => c);
-    }
-
-}
+hoge.sqlConnection = new SqlConnection("Data Source=RBPC12;Initial Catalog=Robot22_DB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+hoge.sqlConnection.Open();
 
 app.Run();
 
 
+static public class hoge
+{
+    public static SqlConnection sqlConnection = null;
+}
