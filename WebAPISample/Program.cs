@@ -40,6 +40,7 @@ app.MapControllers();
 hoge.sqlConnection = new SqlConnection("Data Source=RBPC12;Initial Catalog=Robot22_DB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 hoge.sqlConnection.Open();
 
+
 app.Run();
 
 
