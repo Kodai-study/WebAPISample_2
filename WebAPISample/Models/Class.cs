@@ -1,6 +1,10 @@
-﻿namespace WebAPISample.Models
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace WebAPISample.Models
 {
-    public class Class
+    [Route("api/times")]
+    [ApiController]
+    public class Class : ControllerBase
     {
         public Class(int id, string? name, bool flg_data)
         {
@@ -26,4 +30,12 @@
         public string? name { get; set; }
         public bool flg_data { get; set; }
     }
+}
+
+public static class Result_chars
+{
+    public const char OK = '〇';
+    public const char NG = '×';
+    public const char NO_CHACK = '-';
+    public const char NO_GOOD = '△';
 }

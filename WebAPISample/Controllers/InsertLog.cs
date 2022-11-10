@@ -7,10 +7,10 @@ namespace WebAPISample.Controllers
 {
     [Route("api/insert")]
     [ApiController]
-    public class Insert_sample : ControllerBase
+    public class InsertLog : ControllerBase
     {
         [HttpGet]
-        public void get([FromQuery]int num)
+        public void get([FromQuery] int num)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);

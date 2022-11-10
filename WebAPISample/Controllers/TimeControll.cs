@@ -12,14 +12,14 @@ namespace WebAPISample.Controllers
     [ApiController]
     public class TimeControll : ControllerBase
     {
-        [HttpGet("{id}")]        
+        [HttpGet("{id}")]
         public List<Times> Get(int id,string str)
         {
             Console.WriteLine("id={0}, str = {1}",id,str);
             StringValues val = new StringValues("*");
 
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);            
-            using (var command = new SqlCommand("select * from Time_Table", hoge.sqlConnection))
+            using (var command = new SqlCommand("select * from Cycle_content", hoge.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
                 List<Times> times = new List<Times>();

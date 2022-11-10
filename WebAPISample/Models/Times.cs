@@ -9,7 +9,7 @@
             {
                 return;
             }
-
+            
             start = times[0];
             position = times[1];
             shootStart = times[2];
