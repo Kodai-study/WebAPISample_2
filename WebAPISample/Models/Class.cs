@@ -36,6 +36,6 @@ public static class Result_chars
 {
     public const char OK = '〇';
     public const char NG = '×';
-    public const char NO_CHACK = '-';
+    public const char NO_CHECK = '-';
     public const char NO_GOOD = '△';
 }

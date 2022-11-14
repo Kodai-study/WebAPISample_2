@@ -3,8 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using WebAPISample.Models;
 using System;
-
-
+using System.Text;
 
 namespace WebAPISample.Controllers
 {
@@ -12,25 +11,50 @@ namespace WebAPISample.Controllers
     [ApiController]
     public class TimeControll : ControllerBase
     {
-        [HttpGet("{id}")]
-        public List<Times> Get(int id,string str)
+        [HttpGet]
+        public List<Times> Get(DateTime startTime,DateTime endTime)
         {
-            Console.WriteLine("id={0}, str = {1}",id,str);
             StringValues val = new StringValues("*");
 
-            this.Response.Headers.Add("Access-Control-Allow-Origin", val);            
-            using (var command = new SqlCommand("select * from Cycle_content", hoge.sqlConnection))
+            this.Response.Headers.Add("Access-Control-Allow-Origin", val);
+            StringBuilder sql = new StringBuilder("SELECT * FROM Cycle_content ");
+            
+            if(startTime != DateTime.MinValue && endTime != DateTime.MinValue)
+            {
+                sql.Append("WHERE Carry_in between '");
+                sql.Append(startTime);
+                sql.Append("' AND '");
+                sql.Append(endTime);
+                sql.Append("'");
+            } else if(startTime != DateTime.MinValue)
+            {
+                sql.Append("WHERE Carry_in > '");
+                sql.Append(startTime);
+                sql.Append("'");
+            } else if(endTime != DateTime.MinValue)
+            {
+                sql.Append("WHERE Carry_in < '");
+                sql.Append(endTime);
+                sql.Append("'");
+            }
+
+            using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
                 List<Times> times = new List<Times>();
                 while (reader.Read())
                 {
-                    var spanTimes = new TimeSpan[10];
+                    var start = (DateTime)reader[1];
+
+                    var spanTimes = new TimeSpan[9];
+                    spanTimes[0] = start.TimeOfDay;
+                    
                     for(int i = 0; i < spanTimes.Length; i++)
                     {
-                        spanTimes[i] = (TimeSpan)reader[i + 1];
+                        spanTimes[i] = (TimeSpan)reader[i + 2];
                     }
-                    times.Add(new Times(spanTimes));
+                    times.Add(new Times((int)reader[0],start,spanTimes));
+                    //times.Add(new Times(spanTimes));
                 }
                 return times;
             }

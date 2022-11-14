@@ -18,7 +18,9 @@ namespace WebAPISample.Controllers
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
 
 
-            using (var command = new SqlCommand("select day_time,user_info.name_ID,name from access_log join user_info on access_log.name_ID = user_info.name_ID", hoge.sqlConnection))
+            using (var command = new SqlCommand
+                ("select day_time,user_info.name_ID,name from access_log join user_info on access_log.name_ID = user_info.name_ID order by day_time", Parameters.sqlConnection))
+
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())

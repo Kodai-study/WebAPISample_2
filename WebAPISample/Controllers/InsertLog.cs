@@ -16,7 +16,7 @@ namespace WebAPISample.Controllers
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
 
             var sql = string.Format("INSERT INTO access_log (day_time,name_ID) VALUES ('{0}',{1})", DateTime.Now, num);
-            using (var command = new SqlCommand(sql, hoge.sqlConnection))
+            using (var command = new SqlCommand(sql, Parameters.sqlConnection))
             {
                 command.ExecuteNonQuery();
             }
