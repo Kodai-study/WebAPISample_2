@@ -12,26 +12,28 @@ namespace WebAPISample.Controllers
     public class TimeControll : ControllerBase
     {
         [HttpGet]
-        public List<Times> Get(DateTime startTime,DateTime endTime)
+        public List<Times> Get(DateTime startTime, DateTime endTime)
         {
             StringValues val = new StringValues("*");
 
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM Cycle_content ");
-            
-            if(startTime != DateTime.MinValue && endTime != DateTime.MinValue)
+            StringBuilder sql = new StringBuilder("SELECT * FROM Test_CycleTime ");
+
+            if (startTime != DateTime.MinValue && endTime != DateTime.MinValue)
             {
                 sql.Append("WHERE Carry_in between '");
                 sql.Append(startTime);
                 sql.Append("' AND '");
                 sql.Append(endTime);
                 sql.Append("'");
-            } else if(startTime != DateTime.MinValue)
+            }
+            else if (startTime != DateTime.MinValue)
             {
                 sql.Append("WHERE Carry_in > '");
                 sql.Append(startTime);
                 sql.Append("'");
-            } else if(endTime != DateTime.MinValue)
+            }
+            else if (endTime != DateTime.MinValue)
             {
                 sql.Append("WHERE Carry_in < '");
                 sql.Append(endTime);
@@ -48,16 +50,24 @@ namespace WebAPISample.Controllers
 
                     var spanTimes = new TimeSpan[9];
                     spanTimes[0] = start.TimeOfDay;
-                    
-                    for(int i = 0; i < spanTimes.Length; i++)
+
+                    for (int i = 0; i < spanTimes.Length; i++)
                     {
                         spanTimes[i] = (TimeSpan)reader[i + 2];
                     }
-                    times.Add(new Times((int)reader[0],start,spanTimes));
+                    times.Add(new Times((int)reader[0], start, spanTimes));
                     //times.Add(new Times(spanTimes));
                 }
                 return times;
             }
         }
+
+        [HttpGet("{id}")]
+        public List<TimeSpan> get(string id)
+        {
+            return new List<TimeSpan>();
+        }
+
+
     }
 }

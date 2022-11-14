@@ -64,7 +64,6 @@ using (var reader = command.ExecuteReader())
     }
 }
 
-
 app.Run();
 
 /// <summary>
@@ -85,5 +84,5 @@ static public class Parameters
         WORK,
         ALL_OK
     }
-    static public Dictionary<string, Tuple<Parts,int>> ERROR_CODES = new Dictionary<string, Tuple<Parts, int>>();
+    static public Dictionary<string, Tuple<Parts, int>> ERROR_CODES = new Dictionary<string, Tuple<Parts, int>>();
 }

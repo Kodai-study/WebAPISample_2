@@ -43,7 +43,7 @@ namespace WebAPISample.Controllers
                         if (checkCode.Equals("OK   "))
                         {
                             rList.Add(new CheckResult(e, 11f, 12f, 12f, true));
-                            Console.WriteLine("ID　:　{0}は合格!!!",e);
+                            Console.WriteLine("ID　:　{0}は合格!!!", e);
                             continue;
                         }
                         errList.Add((string)errReader[0]);
@@ -53,7 +53,7 @@ namespace WebAPISample.Controllers
                         errList.Add((string)errReader[0]);
                         Console.WriteLine("ID :{0}  , st :{1}", e, errReader[0]);
                     }
-                    rList.Add(new CheckResult(e,11f,12f,12f,errList));
+                    rList.Add(new CheckResult(e, 11f, 12f, 12f, errList));
                 }
             }
             return rList;

@@ -150,7 +150,7 @@ namespace WebAPISample.Models
             public IC(List<int> errors) : this(true)
             {
                 allResult = Result_chars.NG;
-                foreach(var e in errors)
+                foreach (var e in errors)
                 {
                     switch (e)
                     {
@@ -231,7 +231,7 @@ namespace WebAPISample.Models
                     if (e % 2 == 0)
                     {
                         results[e / 2] = Result_chars.NO_GOOD;
-                        if(result == Result_chars.OK)
+                        if (result == Result_chars.OK)
                             result = Result_chars.NO_GOOD;
                     }
                     else
@@ -287,19 +287,7 @@ namespace WebAPISample.Models
             public DipSW(byte pattern)
             {
                 allResult = Result_chars.NG;
-                string bits = Convert.ToString((pattern), 2);
-                if (pattern <= 1)
-                {
-                    bits = "000" + bits;
-                }
-                else if (pattern <= 3)
-                {
-                    bits = "00" + bits;
-                }
-                else if (pattern <= 7)
-                {
-                    bits = "0" + bits;
-                }
+                string bits = Convert.ToString((pattern), 2).PadLeft(4, '0');
                 this.pattern = bits;
             }
 
@@ -311,6 +299,7 @@ namespace WebAPISample.Models
         {
             public LED(bool result)
             {
+
                 this.allResult = Result_chars.OK;
                 this.redDir = Result_chars.OK;
                 this.greenDir = Result_chars.OK;
@@ -341,7 +330,7 @@ namespace WebAPISample.Models
             public char allResult { set; get; }
             public char redDir { set; get; }
             public char greenDir { set; get; }
-            public char whiteDir{ set; get; }
+            public char whiteDir { set; get; }
             public char redHave { set; get; }
             public char greenHave { set; get; }
             public char whiteHave { set; get; }
@@ -360,7 +349,7 @@ namespace WebAPISample.Models
             public Diode(List<int> codes) : this(true)
             {
                 this.allResult = Result_chars.NG;
-                foreach(var e in codes)
+                foreach (var e in codes)
                 {
                     switch (e)
                     {

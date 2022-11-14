@@ -5,9 +5,9 @@ namespace WebAPISample.Models
     /*hello*/
     public class Times
     {
-        public Times(int id,TimeSpan[] times)
+        public Times(int id, TimeSpan[] times)
         {
-            if(times.Length != 10)
+            if (times.Length != 10)
             {
                 return;
             }
@@ -25,7 +25,7 @@ namespace WebAPISample.Models
             end = times[9];
         }
 
-        public Times(int id,DateTime start, TimeSpan[] times)
+        public Times(int id, DateTime start, TimeSpan[] times)
         {
             if (times.Length != 9)
             {
