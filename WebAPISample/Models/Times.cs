@@ -2,7 +2,9 @@
 
 namespace WebAPISample.Models
 {
-    /*hello*/
+    /// <summary>
+    /// サイクルタイムを、工程ごとの時刻で表示させるときの表示データ
+    /// </summary>
     public class Times
     {
         public Times(int id, TimeSpan[] times)
@@ -43,8 +45,18 @@ namespace WebAPISample.Models
             carryOut = times[7];
             end = times[8];
         }
+        /// <summary>
+        /// サイクルID。行われた検査ごとに作られる
+        /// </summary>
         public int cycleID { get; set; }
+        /// <summary>
+        /// 搬送コンベアに乗せられた(センサに触れた)時間。
+        /// ワークを代表する検査時間はこの時間が適用される
+        /// </summary>
         public DateTime start { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public TimeSpan position { get; set; }
         public TimeSpan shootStart { get; set; }
         public TimeSpan shootEnd { get; set; }
@@ -55,4 +67,4 @@ namespace WebAPISample.Models
         public TimeSpan carryOut { get; set; }
         public TimeSpan end { get; set; }
     }
-}
+}   

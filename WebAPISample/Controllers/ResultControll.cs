@@ -6,15 +6,20 @@ using System.Text;
 
 namespace WebAPISample.Controllers
 {
+    /// <summary>
+    /// 結果を表すJSONを作成するクラス。
+    /// </summary>
     [Route("api/result")]
     [ApiController]
     public class ResultControll : ControllerBase
     {
+        //TODO 返すデータに、検査項目を追加する
         [HttpGet]
         public List<CheckResult> Get()
         {
             StringValues val = new StringValues("*");
-            var errIndexes = new List<int>();
+
+            var targetIndexes = new List<int>();   //対象になるワークのID
 
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
             StringBuilder sql = new StringBuilder
@@ -26,13 +31,12 @@ namespace WebAPISample.Controllers
                 while (reader.Read())
                 {
                     int id = (int)reader[0];
-                    errIndexes.Add(id);
+                    targetIndexes.Add(id);
                 }
             }
 
-            foreach (var e in errIndexes)
+            foreach (var e in targetIndexes)
             {
-
                 var errList = new List<string>();
                 var errCommand = new SqlCommand("SELECT result_Code from Test_Result where ID = " + e, Parameters.sqlConnection);
                 using (var errReader = errCommand.ExecuteReader())

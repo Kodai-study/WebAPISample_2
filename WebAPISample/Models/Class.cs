@@ -32,6 +32,9 @@ namespace WebAPISample.Models
     }
 }
 
+/// <summary>
+/// 表に表示させる文字の一覧。
+/// </summary>
 public static class Result_chars
 {
     public const char OK = '〇';

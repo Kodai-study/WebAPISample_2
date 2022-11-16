@@ -1,6 +1,8 @@
 ﻿namespace WebAPISample.Models
 {
-    /*hello*/
+    /// <summary>
+    /// ログを表示させるときの項目
+    /// </summary>
     public class LogSample
     {
         public LogSample(DateTime? date, int userId, string? userName)
