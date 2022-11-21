@@ -66,5 +66,21 @@ namespace WebAPISample.Models
         public TimeSpan defrred { get; set; }
         public TimeSpan carryOut { get; set; }
         public TimeSpan end { get; set; }
+
+        public TimeSpan[] getTimeArray()
+        {
+            var timearray = new TimeSpan[10];
+            timearray[0] = position;
+            timearray[1] = shootStart;
+            timearray[2] = shootEnd;
+            timearray[3] = stock;
+            timearray[4] = recipt;
+            timearray[5] = readRFID;
+            timearray[6] = defrred;
+            timearray[7] = carryOut;
+            timearray[8] = end;
+            return timearray;
+        }
+
     }
-}   
+}

@@ -30,21 +30,40 @@ namespace WebAPISample.Models
             this.temprature = temprature;
             this.humidity = humidity;
             this.brightness = brightness;
+            this.AllResult = allResult ? Result_chars.OK : Result_chars.NG;
             this.result = new Result(true);
         }
-        
+
+        public CheckResult(int workID, float temprature, float humidity, float brightness, DateTime startTime, bool allResult)
+        {
+            this.workID = workID;
+            this.workID = workID;
+            this.temprature = temprature;
+            this.humidity = humidity;
+            this.brightness = brightness;
+            this.AllResult = allResult ? Result_chars.OK : Result_chars.NG;
+            this.startTime = startTime;
+            this.result = new Result(true);
+        }
+
         /// <summary>
         /// エラーがあったときに、エラーコードのリストから検査結果を作る
         /// </summary>
         /// <param name="errCodes">エラーコード(文字列)のリスト</param>
-        public CheckResult(int workID, float temprature, float humidity, float brightness, List<string> errCodes)
+        public CheckResult(int workID, float temprature, float humidity, float brightness, DateTime startTime, List<string> errCodes)
         {
             this.workID = workID;
             this.temprature = temprature;
             this.humidity = humidity;
             this.brightness = brightness;
             this.result = new Result(errCodes);
+            this.startTime = startTime;
         }
+
+
+        public DateTime startTime { get; set; }
+
+        public char AllResult { get; set; }
 
         /// <summary>
         /// ワークのID
@@ -485,4 +504,3 @@ namespace WebAPISample.Models
 
     }
 }
-
