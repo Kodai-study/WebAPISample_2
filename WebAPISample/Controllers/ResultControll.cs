@@ -18,6 +18,7 @@ namespace WebAPISample.Controllers
         [HttpGet]
         public List<CheckResult> Get(string? resultsort, [FromQuery] TimeParams time)
         {
+            
             bool isWhere = false;
             var targetIndexes = new List<int>();   //対象になるワークのID
             StringValues val = new StringValues("*");

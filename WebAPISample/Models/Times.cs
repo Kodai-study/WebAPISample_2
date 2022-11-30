@@ -55,14 +55,33 @@ namespace WebAPISample.Models
         /// </summary>
         public DateTime start { get; set; }
         /// <summary>
-        /// 
+        /// ワークが写真撮影場所で位置決めされた時
         /// </summary>
         public TimeSpan position { get; set; }
+        /// <summary>
+        /// 写真撮影の1枚目が行われた時
+        /// </summary>
         public TimeSpan shootStart { get; set; }
+        /// <summary>
+        /// 写真撮影の最後の1枚が行われた時
+        /// </summary>
         public TimeSpan shootEnd { get; set; }
+        /// <summary>
+        /// ワークがコンベアの最後の在荷センサに触れたとき
+        /// </summary>
         public TimeSpan stock { get; set; }
+        /// <summary>
+        /// ワークがロボットの2つ目の腕でつかまれた時
+        /// (受け渡し部分の在荷センサが反応しなくなった瞬間)
+        /// </summary>
         public TimeSpan recipt { get; set; }
+        /// <summary>
+        /// RFIDでICタグのデータが読み取れた瞬間
+        /// </summary>
         public TimeSpan readRFID { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public TimeSpan defrred { get; set; }
         public TimeSpan carryOut { get; set; }
         public TimeSpan end { get; set; }

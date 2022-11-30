@@ -34,6 +34,15 @@ namespace WebAPISample.Models
             this.result = new Result(true);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workID"></param>
+        /// <param name="temprature"></param>
+        /// <param name="humidity"></param>
+        /// <param name="brightness"></param>
+        /// <param name="startTime"></param>
+        /// <param name="allResult"></param>
         public CheckResult(int workID, float temprature, float humidity, float brightness, DateTime startTime, bool allResult)
         {
             this.workID = workID;
@@ -60,9 +69,14 @@ namespace WebAPISample.Models
             this.startTime = startTime;
         }
 
-
+        /// <summary>
+        /// 検査開始時刻
+        /// </summary>
         public DateTime startTime { get; set; }
 
+        /// <summary>
+        /// ワーク全体の合否
+        /// </summary>
         public char AllResult { get; set; }
 
         /// <summary>
