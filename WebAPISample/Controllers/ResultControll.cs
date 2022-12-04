@@ -14,7 +14,16 @@ namespace WebAPISample.Controllers
     [ApiController]
     public class ResultControll : ControllerBase
     {
-        //TODO 返すデータに、検査項目を追加する
+
+        /// <summary>
+        ///  GETメソッドで、検査結果の一覧をJSONで返す
+        /// </summary>
+        /// <param name="resultsort"> 
+        ///  検査全体の結果が合格("OK")
+        ///  不合格("NG")だけを選択することができる
+        /// </param>
+        /// <param name="time"> 検査開始時刻で期間の指定ができる </param>
+        /// <returns> CheckResult 検査結果のリスト </returns>
         [HttpGet]
         public List<CheckResult> Get(string? resultsort, [FromQuery] TimeParams time)
         {
@@ -25,6 +34,7 @@ namespace WebAPISample.Controllers
             StringBuilder sql = new StringBuilder
                 ("SELECT ID FROM View_RDC");
 
+            /* 検査結果の合格、不合格で絞るとき */
             if (resultsort != null)
             {
                 isWhere = true;
@@ -38,7 +48,8 @@ namespace WebAPISample.Controllers
                 }
             }
 
-            if(time.isParams)
+            /* 絞り込みに範囲指定があるとき */
+            if (time.IsSetParams)
             {
                 if (isWhere)
                     sql.Append(" AND ");
@@ -50,6 +61,9 @@ namespace WebAPISample.Controllers
             }
 
             var rList = new List<CheckResult>();
+            //HACK 取ってくるときの設計を変える。出力を全部見て、IDが変わったら書き換え
+
+            /* IDを取ってくる */
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
@@ -61,10 +75,14 @@ namespace WebAPISample.Controllers
                 }
             }
 
+            /* エラー項目から、検査結果のリストを返す */
             foreach (var e in targetIndexes)
             {
                 var errList = new List<string>();
-                var errCommand = new SqlCommand("SELECT result_Code,temp,hum,illum,Carry_in from View_RDC where ID = " + e, Parameters.sqlConnection);
+                var errCommand = new SqlCommand
+                    ("SELECT result_Code,temp,hum,illum,Carry_in FROM View_RDC where ID = " +
+                    e, Parameters.sqlConnection);
+
                 using (var errReader = errCommand.ExecuteReader())
                 {
                     float temp = 0;
@@ -73,11 +91,14 @@ namespace WebAPISample.Controllers
                     DateTime startTime = DateTime.MinValue;
                     if (errReader.Read())
                     {
+                        /* 1行目のデータから、ワークの検査情報を取ってくる */
                         var checkCode = (string)errReader[0];
                         temp = (float)errReader.GetDouble(1);
                         hun = (float)errReader.GetDouble(2);
                         illum = (float)errReader.GetDouble(3);
                         startTime = errReader.GetDateTime(4);
+
+                        /* 検査が全部オッケーだった時の処理 */
                         if (checkCode.Equals("OK   "))
                         {
                             rList.Add(new CheckResult(e, temp, hun, illum, startTime, true));
@@ -86,6 +107,7 @@ namespace WebAPISample.Controllers
                         }
                         errList.Add((string)errReader[0]);
                     }
+                    /* 検査にエラーがあったら、そのリストからワークの検査結果を作成 */
                     while (errReader.Read())
                     {
                         errList.Add((string)errReader[0]);
@@ -96,55 +118,5 @@ namespace WebAPISample.Controllers
             }
             return rList;
         }
-        /*
-        //TODO 返すデータに、検査項目を追加する
-        [HttpPost]
-        public List<CheckResult> Post()
-        {
-            StringValues val = new StringValues("*");
-
-            var targetIndexes = new List<int>();   //対象になるワークのID
-
-            this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder
-                ("SELECT ID FROM Test_Data");
-            var rList = new List<CheckResult>();
-            using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    int id = (int)reader[0];
-                    targetIndexes.Add(id);
-                }
-            }
-
-            foreach (var e in targetIndexes)
-            {
-                var errList = new List<string>();
-                var errCommand = new SqlCommand("SELECT result_Code from Test_Result where ID = " + e, Parameters.sqlConnection);
-                using (var errReader = errCommand.ExecuteReader())
-                {
-                    if (errReader.Read())
-                    {
-                        var checkCode = (string)errReader[0];
-                        if (checkCode.Equals("OK   "))
-                        {
-                            rList.Add(new CheckResult(e, 11f, 12f, 12f, true));
-                            Console.WriteLine("ID　:　{0}は合格!!!", e);
-                            continue;
-                        }
-                        errList.Add((string)errReader[0]);
-                    }
-                    while (errReader.Read())
-                    {
-                        errList.Add((string)errReader[0]);
-                        Console.WriteLine("ID :{0}  , st :{1}", e, errReader[0]);
-                    }
-                    rList.Add(new CheckResult(e, 11f, 12f, 12f, errList));
-                }
-            }
-            return rList;
-        }*/
     }
 }

@@ -27,6 +27,12 @@ namespace WebAPISample.Models
             end = times[9];
         }
 
+        /// <summary>
+        ///  各情報から、APIで返すデータを作成する
+        /// </summary>
+        /// <param name="id"> ワークの(検査)ID </param>
+        /// <param name="start"> 開始時刻。これだけ日付を含むDateTime </param>
+        /// <param name="times"> タイムスタンプの配列。時刻のみのTimeSpan </param>
         public Times(int id, DateTime start, TimeSpan[] times)
         {
             if (times.Length != 9)
@@ -55,20 +61,48 @@ namespace WebAPISample.Models
         /// </summary>
         public DateTime start { get; set; }
         /// <summary>
-        /// 
+        /// ワークが写真撮影場所で位置決めされた時
         /// </summary>
         public TimeSpan position { get; set; }
+        /// <summary>
+        /// 写真撮影の1枚目が行われた時
+        /// </summary>
         public TimeSpan shootStart { get; set; }
+        /// <summary>
+        /// 写真撮影の最後の1枚が行われた時
+        /// </summary>
         public TimeSpan shootEnd { get; set; }
+        /// <summary>
+        /// ワークがコンベアの最後の在荷センサに触れたとき
+        /// </summary>
         public TimeSpan stock { get; set; }
+        /// <summary>
+        /// ワークがロボットの2つ目の腕でつかまれた時
+        /// (受け渡し部分の在荷センサが反応しなくなった瞬間)
+        /// </summary>
         public TimeSpan recipt { get; set; }
+        /// <summary>
+        /// RFIDでICタグのデータが読み取れた瞬間
+        /// </summary>
         public TimeSpan readRFID { get; set; }
+
+        /* TODO 時刻を記録するところをはっきりさせる */
         public TimeSpan defrred { get; set; }
         public TimeSpan carryOut { get; set; }
+        /// <summary>
+        ///  検査終了時刻(搬出コンベアの最後のセンサを通り過ぎる)
+        /// </summary>
         public TimeSpan end { get; set; }
 
+        /// <summary>
+        ///  (使うかわからない)
+        ///  タイムスタンプのデータを扱いやすい配列にする
+        /// </summary>
+        /// <returns> TimeSpanの配列。日付どうしよう </returns>
         public TimeSpan[] getTimeArray()
         {
+
+            ///  FIXME hello
             var timearray = new TimeSpan[10];
             timearray[0] = position;
             timearray[1] = shootStart;
@@ -81,6 +115,5 @@ namespace WebAPISample.Models
             timearray[8] = end;
             return timearray;
         }
-
     }
 }
