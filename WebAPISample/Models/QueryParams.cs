@@ -20,14 +20,14 @@ namespace WebAPISample.Models
         /// 検査開始日付(時刻)の範囲絞り込みで、
         /// この時間以前になる。
         /// </summary>
-        [FromQuery(Name ="endTime")]
+        [FromQuery(Name = "endTime")]
         public DateTime endTime { get; set; }
 
         /// <summary>
         /// クエリが存在していたらtrue
         /// 存在していなかったらfalse
         /// </summary>
-        public bool isParams
+        public bool IsSetParams
         {
             get
             {
@@ -35,24 +35,51 @@ namespace WebAPISample.Models
             }
         }
 
-        public explicit operator bool(TimeParams tm)
+        /// <summary>
+        /// このクラスをbool型に変更すると、パラメータが存在するかどうかを
+        /// 返してくれる
+        /// </summary>
+        /// <param name="tm"></param>
+        public static implicit operator bool(TimeParams tm)
         {
-            return false;
+            return tm.startTime != DateTime.MinValue || tm.endTime != DateTime.MinValue;
         }
 
+        /// <summary>
+        /// 期間の初めの時間を指定するパラメータがあるかどうか
+        /// </summary>
+        public bool IsSetStartTime
+        {
+            get
+            {
+                return startTime != DateTime.MinValue;
+            }
+        }
 
+        /// <summary>
+        /// 期間の終わりの時間を指定するパラメータがあるかどうか
+        /// </summary>
+        public bool IsSetEndTime
+        {
+            get
+            {
+                return endTime != DateTime.MinValue;
+            }
+        }
 
+        /// <summary>
+        /// 受け取っていた、クエリパラメータの日付の値から、
+        /// 範囲を指定するSQL文を作り出す。
+        /// </summary>
+        /// <returns> 
+        ///  DataTimeの範囲を指定するSQL文
+        ///  startTime以上、endTime以下 
+        /// </returns>
         public string CreateSQL()
         {
-
-            var o = new TimeParams();
-            if ((bool)o)
-            {
-
-            }
-
             var sql = new StringBuilder("");
-            if (startTime != DateTime.MinValue && endTime != DateTime.MinValue)
+            /* 期間の最初と最後が指定されていたとき */
+            if (IsSetStartTime && IsSetEndTime)
             {
                 sql.Append(" between '");
                 sql.Append(startTime);
@@ -60,13 +87,13 @@ namespace WebAPISample.Models
                 sql.Append(endTime);
                 sql.Append("'");
             }
-            else if (startTime != DateTime.MinValue)
+            else if (IsSetStartTime)
             {
                 sql.Append(" > '");
                 sql.Append(startTime);
                 sql.Append("'");
             }
-            else if (endTime != DateTime.MinValue)
+            else if (IsSetEndTime)
             {
                 sql.Append(" < '");
                 sql.Append(endTime);

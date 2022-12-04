@@ -57,17 +57,3 @@ public static class Result_chars
     /// </summary>
     public const char NO_GOOD = '△';
 }
-
-
-abstract  class ba
-{
-    abstract ba();
-}
-
-class o:ba
-{
-    override ba()
-    {
-
-    }
-}
