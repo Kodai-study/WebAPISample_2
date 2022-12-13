@@ -5,7 +5,7 @@ using WebAPISample.Models;
 
 namespace WebAPISample.Modules
 {
-    public class Statistics : ControllerBase
+    public class Statistics
     {
         public DateOnly YMD { get; set; }
         public int Scan { get; set; }
@@ -18,9 +18,9 @@ namespace WebAPISample.Modules
         public TimeSpan max_cycletime { get; set; }
 
         public Statistics(DateOnly YMD, int Scan, int OK, float ave_temp, float ave_hum,
-           float ave_illum, float ave_cycletime, int ave_cycletime_sec)
+           float ave_illum, TimeSpan ave_cycletime, int ave_cycletime_sec)
         {
-            this.YMD = TMD;
+            this.YMD = YMD;
             this.OK = OK;
             this.ave_temp = ave_temp;
             this.ave_hum = ave_hum;

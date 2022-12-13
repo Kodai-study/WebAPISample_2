@@ -44,7 +44,7 @@ namespace WebAPISample.Models
         {
             return tm.startTime != DateTime.MinValue || tm.endTime != DateTime.MinValue;
         }
-
+        
         /// <summary>
         /// 期間の初めの時間を指定するパラメータがあるかどうか
         /// </summary>
@@ -89,13 +89,13 @@ namespace WebAPISample.Models
             }
             else if (IsSetStartTime)
             {
-                sql.Append(" > '");
+                sql.Append(" >= '");
                 sql.Append(startTime);
                 sql.Append("'");
             }
             else if (IsSetEndTime)
             {
-                sql.Append(" < '");
+                sql.Append(" <= '");
                 sql.Append(endTime);
                 sql.Append("'");
             }

@@ -40,8 +40,8 @@ namespace WebAPISample.Models
         /// </summary>
         /// <param name="startTime"> 検査開始日付、時刻(搬入コンベアに触れたとき) </param>
         /// <param name="allResult"> すべてOK(True)かすべてNG(False) </param>
-        public CheckResult(int workID, float temprature, float humidity,
-            float brightness, DateTime startTime, bool allResult)
+        public CheckResult(int workID, float? temprature, float? humidity,
+            float? brightness, DateTime startTime, bool allResult)
         {
             this.workID = workID;
             this.workID = workID;
@@ -57,7 +57,7 @@ namespace WebAPISample.Models
         /// エラーがあったときに、エラーコードのリストから検査結果を作る
         /// </summary>
         /// <param name="errCodes">エラーコード(文字列)のリスト</param>
-        public CheckResult(int workID, float temprature, float humidity, float brightness,
+        public CheckResult(int workID, float? temprature, float? humidity, float? brightness,
             DateTime startTime, List<string> errCodes)
         {
             this.workID = workID;

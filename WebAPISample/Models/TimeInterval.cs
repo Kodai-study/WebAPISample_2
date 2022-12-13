@@ -40,7 +40,6 @@ namespace WebAPISample.Models
 
             foreach (var e in timeStump.getTimeArray())
             {
-
             }
         }
         /// <summary>

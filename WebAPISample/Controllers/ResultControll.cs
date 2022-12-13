@@ -85,18 +85,27 @@ namespace WebAPISample.Controllers
 
                 using (var errReader = errCommand.ExecuteReader())
                 {
-                    float temp = 0;
-                    float hun = 0;
-                    float illum = 0;
+                    float? temp = null;
+                    float? hun = null;
+                    float? illum = null;
                     DateTime startTime = DateTime.MinValue;
                     if (errReader.Read())
                     {
                         /* 1行目のデータから、ワークの検査情報を取ってくる */
                         var checkCode = (string)errReader[0];
-                        temp = (float)errReader.GetDouble(1);
-                        hun = (float)errReader.GetDouble(2);
-                        illum = (float)errReader.GetDouble(3);
-                        startTime = errReader.GetDateTime(4);
+
+                        //温度、湿度、照度にはNULLが入っている可能性がある
+                        if (!errReader[1].Equals(DBNull.Value))
+                            temp = (float)errReader.GetDouble(1);
+
+                        if (!errReader[2].Equals(DBNull.Value))
+                            hun = (float)errReader.GetDouble(2);
+
+                        if (!errReader[3].Equals(DBNull.Value))
+                            illum = (float)errReader.GetDouble(3);
+
+                        if (!errReader[4].Equals(DBNull.Value))
+                            startTime = errReader.GetDateTime(4);
 
                         /* 検査が全部オッケーだった時の処理 */
                         if (checkCode.Equals("OK   "))
