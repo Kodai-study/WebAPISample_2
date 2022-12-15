@@ -32,7 +32,7 @@ namespace WebAPISample.Controllers
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM Test_CycleTime WHERE");
+            StringBuilder sql = new StringBuilder("SELECT * FROM Test_CycleTime WHERE Carry_in");
             sql.Append(time.CreateSQL());
 
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
@@ -43,11 +43,14 @@ namespace WebAPISample.Controllers
                 while (reader.Read())
                 {
                     var start = (DateTime)reader[1];
-                    var spanTimes = new TimeSpan[9];
+                    var spanTimes = new TimeSpan?[9];
 
                     for (int i = 0; i < spanTimes.Length; i++)
                     {
-                        spanTimes[i] = (TimeSpan)reader[i + 2];
+                        if (reader[i + 2].Equals(DBNull.Value))
+                            spanTimes[i] = null;
+                        else 
+                            spanTimes[i] = reader.GetTimeSpan(i + 2);
                     }
                     times.Add(new Times((int)reader[0], start, spanTimes));
                     //times.Add(new Times(spanTimes));

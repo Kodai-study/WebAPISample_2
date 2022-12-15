@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using WebAPISample.Models;
-
+/*
 namespace WebAPISample.Controllers
 {
     [Route("api/insert")]
@@ -22,4 +22,4 @@ namespace WebAPISample.Controllers
             }
         }
     }
-}
+}*/
