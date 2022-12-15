@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Diagnostics;
-
-namespace WebAPISample.Models
+﻿namespace WebAPISample.Models
 {
     /// <summary>
     /// 作業の期間で表示するときに、その時間を計算してデータを作成する

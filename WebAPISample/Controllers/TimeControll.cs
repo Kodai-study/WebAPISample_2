@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
-using WebAPISample.Models;
-using System;
 using System.Text;
+using WebAPISample.Models;
 
 namespace WebAPISample.Controllers
 {
@@ -49,7 +48,7 @@ namespace WebAPISample.Controllers
                     {
                         if (reader[i + 2].Equals(DBNull.Value))
                             spanTimes[i] = null;
-                        else 
+                        else
                             spanTimes[i] = reader.GetTimeSpan(i + 2);
                     }
                     times.Add(new Times((int)reader[0], start, spanTimes));
@@ -60,8 +59,8 @@ namespace WebAPISample.Controllers
         }
 
         //TODO かかった時間を返すやつも作成
-        [HttpGet("{id}")]
-        public List<TimeSpan> get(string id)
+        // [HttpGet("{id}")]
+        private List<TimeSpan> get(string id)
         {
             return new List<TimeSpan>();
         }

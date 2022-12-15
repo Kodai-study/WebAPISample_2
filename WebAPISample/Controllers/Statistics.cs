@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
-using WebAPISample.Models;
 
 namespace WebAPISample.Controllers
 {
-    [Route("api/insert")]
-    [ApiController]
+    //[Route("api/insert")]
+    //[ApiController]
     public class Statistics : ControllerBase
     {
         

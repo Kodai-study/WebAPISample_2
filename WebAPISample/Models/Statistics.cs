@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Primitives;
-using WebAPISample.Models;
-
-namespace WebAPISample.Modules
+﻿namespace WebAPISample.Modules
 {
     public class Statistics
     {

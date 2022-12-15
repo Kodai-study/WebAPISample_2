@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.JSInterop;
-using NuGet.Protocol.Plugins;
-
-namespace WebAPISample.Models
+﻿namespace WebAPISample.Models
 {
-    using ONE = Char;
 
+    using ONE = Char;
     /// <summary>
     /// 検査情報を表すクラス
     /// </summary>

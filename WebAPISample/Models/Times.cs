@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace WebAPISample.Models
+﻿namespace WebAPISample.Models
 {
     /// <summary>
     /// サイクルタイムを、工程ごとの時刻で表示させるときの表示データ
@@ -18,7 +15,7 @@ namespace WebAPISample.Models
             start = DateTime.Today;
             if (times[0] != null)
             {
-                start += (TimeSpan)times[0];
+                start += (TimeSpan)(times[0]);
             }
             position = times[1];
             shootStart = times[2];

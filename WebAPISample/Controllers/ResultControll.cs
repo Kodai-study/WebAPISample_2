@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
-using WebAPISample.Models;
 using System.Text;
-using System.Drawing.Text;
+using WebAPISample.Models;
 
 namespace WebAPISample.Controllers
 {

@@ -1,20 +1,12 @@
-﻿using System.Data.SqlClient;
-using System;
-using Microsoft.Data.SqlClient;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using WebAPISample.Models;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using WebAPISample.Modules.Class;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Parameters;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<cs>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("cs") ?? throw new InvalidOperationException("Connection string 'cs' not found.")));
 
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
