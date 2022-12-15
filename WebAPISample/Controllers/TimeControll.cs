@@ -31,9 +31,12 @@ namespace WebAPISample.Controllers
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM Test_CycleTime WHERE Carry_in");
-            sql.Append(time.CreateSQL());
-
+            StringBuilder sql = new StringBuilder("SELECT * FROM Test_CycleTime");
+            if (time)
+            {
+                sql.Append(" WHERE Carry_in ");
+                sql.Append(time.CreateSQL());
+            }
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
