@@ -20,7 +20,7 @@ namespace WebAPISample.Models
             this.supply = (DateTime)times[0];
             this.Visal_in = times[1];
             this.Functional_in = times[2];
-            this.Assembly_in= times[3];
+            this.Assembly_in = times[3];
             this.Assembly = times[4];
         }
 
@@ -81,7 +81,7 @@ namespace WebAPISample.Models
             ///  FIXME hello
             var timearray = new DateTime?[COLUM_NUMBER];
 
-            timearray[0] = this.supply ;
+            timearray[0] = this.supply;
             timearray[1] = this.Functional_in;
             timearray[2] = this.Visal_in;
             timearray[3] = this.Assembly_in;

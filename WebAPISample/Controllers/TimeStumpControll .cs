@@ -12,9 +12,9 @@ namespace WebAPISample.Controllers
     ///  サイクルタイムの一覧を表す。
     ///  各動作が行われた時刻を返す
     /// </summary>
-    [Route("api/times")]
+    [Route("api/times/timestump")]
     [ApiController]
-    public class TimeControll : ControllerBase
+    public class TimeStumpControll : ControllerBase
     {
         /// <summary>
         ///  各動作タイミングのタイムスタンプを返す。
@@ -27,11 +27,9 @@ namespace WebAPISample.Controllers
         /// <returns>
         ///  検索された時間データ一覧
         /// </returns>
-
-
+        /// 
         [HttpGet]
-
-        public List<TimeInterval> getTimeIntervals([FromQuery] TimeParams timeParams)
+        public  List<Times> getTimeStamps(TimeParams timeParams)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
@@ -46,7 +44,7 @@ namespace WebAPISample.Controllers
             using (var reader = command.ExecuteReader())
             {
                 /* 時刻リストから、返すデータを作成 */
-                List<TimeInterval> times = new List<TimeInterval>();
+                List<Times> times = new List<Times>();
                 while (reader.Read())
                 {
                     var start = (DateTime)reader[1];
@@ -59,13 +57,12 @@ namespace WebAPISample.Controllers
                         else
                             spanTimes[i] = reader.GetDateTime(i + 2);
                     }
-                    Times timeStump = new Times((int)reader[0], start, spanTimes);
-                    times.Add(new TimeInterval(timeStump));
+                    times.Add(new Times((int)reader[0], start, spanTimes));
                 }
                 return times;
-
             }
         }
+
 
 
     }
