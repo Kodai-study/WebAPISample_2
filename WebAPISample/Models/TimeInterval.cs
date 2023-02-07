@@ -32,8 +32,8 @@
        
         public TimeInterval(Times timeStump)
         {
-            this.cycleID = timeStump.cycleID;
-            this.startTime = timeStump.start;
+            this.cycleID = timeStump.workId;
+            this.startTime = timeStump.supply;
 
             foreach (var e in timeStump.getTimeArray())
             {

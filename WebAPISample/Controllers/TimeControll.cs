@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.Extensions.Primitives;
 using System.Text;
 using WebAPISample.Models;
@@ -27,15 +28,26 @@ namespace WebAPISample.Controllers
         ///  検索された時間データ一覧
         /// </returns>
         [HttpGet]
-        public List<Times> Get([FromQuery] TimeParams time)
+        public List<Times> Get([FromQuery] TimeParams time, [FromQuery] string showMethod)
+        {
+            if (showMethod.Equals("") || showMethod == null)
+            {
+                return getTimeStamps(time);
+            }
+            return getTimeStamps(time);
+        }
+
+
+        private List<Times> getTimeStamps(TimeParams timeParams)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM Test_CycleTime");
-            if (time)
+            StringBuilder sql = new StringBuilder("SELECT * FROM SensorTimeT");
+
+            if (timeParams)
             {
                 sql.Append(" WHERE Carry_in ");
-                sql.Append(time.CreateSQL());
+                sql.Append(timeParams.CreateSQL());
             }
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
             using (var reader = command.ExecuteReader())
@@ -45,27 +57,23 @@ namespace WebAPISample.Controllers
                 while (reader.Read())
                 {
                     var start = (DateTime)reader[1];
-                    var spanTimes = new TimeSpan?[9];
+                    var spanTimes = new DateTime?[Times.COLUM_NUMBER - 1];
 
                     for (int i = 0; i < spanTimes.Length; i++)
                     {
                         if (reader[i + 2].Equals(DBNull.Value))
                             spanTimes[i] = null;
                         else
-                            spanTimes[i] = reader.GetTimeSpan(i + 2);
+                            spanTimes[i] = reader.GetDateTime(i + 2);
                     }
                     times.Add(new Times((int)reader[0], start, spanTimes));
-                    //times.Add(new Times(spanTimes));
                 }
                 return times;
+
             }
         }
 
-        //TODO かかった時間を返すやつも作成
-        // [HttpGet("{id}")]
-        private List<TimeSpan> get(string id)
-        {
-            return new List<TimeSpan>();
-        }
+
+
     }
 }
