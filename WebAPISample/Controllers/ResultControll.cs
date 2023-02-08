@@ -31,7 +31,7 @@ namespace WebAPISample.Controllers
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
             StringBuilder sql = new StringBuilder
-                ("SELECT ID FROM View_RDC");
+                ("SELECT ID FROM ALL_resultView");
 
             /* 検査結果の合格、不合格で絞るとき */
             if (resultsort != null)
@@ -79,49 +79,38 @@ namespace WebAPISample.Controllers
             {
                 var errList = new List<string>();
                 var errCommand = new SqlCommand
-                    ("SELECT result_Code,temp,hum,illum,Carry_in FROM View_RDC where ID = " +
-                    e, Parameters.sqlConnection);
+                    ("SELECT ID,Supply,Assembly_end,Volt,Freq,result_Code FROM ALL_resultView where ID = " + e
+                    , Parameters.sqlConnection);
 
                 using (var errReader = errCommand.ExecuteReader())
                 {
-                    float? temp = null;
-                    float? hun = null;
-                    float? illum = null;
                     DateTime startTime = DateTime.MinValue;
+                    DateTime? endTime = null;
                     if (errReader.Read())
                     {
                         /* 1行目のデータから、ワークの検査情報を取ってくる */
-                        var checkCode = (string)errReader[0];
+                        var checkCode = errReader.GetString(5);
 
-                        //温度、湿度、照度にはNULLが入っている可能性がある
+
                         if (!errReader[1].Equals(DBNull.Value))
-                            temp = (float)errReader.GetDouble(1);
-
+                            startTime = errReader.GetDateTime(1);
                         if (!errReader[2].Equals(DBNull.Value))
-                            hun = (float)errReader.GetDouble(2);
-
-                        if (!errReader[3].Equals(DBNull.Value))
-                            illum = (float)errReader.GetDouble(3);
-
-                        if (!errReader[4].Equals(DBNull.Value))
-                            startTime = errReader.GetDateTime(4);
+                            endTime = errReader.GetDateTime(2);
 
                         /* 検査が全部オッケーだった時の処理 */
-                        if (checkCode.Equals("OK   "))
+                        if (checkCode.Equals("OK  "))
                         {
-                            rList.Add(new CheckResult(e, temp, hun, illum, startTime, true));
-                            Console.WriteLine("ID　:　{0}は合格!!!", e);
+                            rList.Add(new CheckResult(e, startTime, endTime, true));
                             continue;
                         }
-                        errList.Add((string)errReader[0]);
+                        errList.Add(errReader.GetString(5));
                     }
                     /* 検査にエラーがあったら、そのリストからワークの検査結果を作成 */
                     while (errReader.Read())
                     {
-                        errList.Add((string)errReader[0]);
-                        Console.WriteLine("ID :{0}  , st :{1}", e, errReader[0]);
+                        errList.Add(errReader.GetString(5));
                     }
-                    rList.Add(new CheckResult(e, temp, hun, illum, startTime, errList));
+                    rList.Add(new CheckResult(e, startTime, endTime, errList));
                 }
             }
             return rList;

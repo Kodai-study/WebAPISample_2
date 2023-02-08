@@ -62,6 +62,24 @@
             this.startTime = startTime;
         }
 
+        public CheckResult(int workID, DateTime startTime, DateTime? endTime ,List<string> errCodes)
+        {
+            this.startTime = startTime;
+            this.workID = workID;
+            this.result = new Result(errCodes);
+            if(endTime != null)
+            this.cycleTime = endTime - startTime;
+        }
+
+        public CheckResult(int workID, DateTime startTime, DateTime? endTime, bool allok)
+        {
+            this.startTime = startTime;
+            this.workID = workID;
+            this.result = new Result(allok);
+            if (endTime != null)
+                this.cycleTime = endTime - startTime;
+        }
+
         /// <summary>
         /// 検査開始時刻(搬入コンベアのセンサに触れる)
         /// </summary>
@@ -92,6 +110,8 @@
         /// 検査結果を表すクラス
         /// </summary>
         public Result? result { set; get; } = null;
+
+        public TimeSpan? cycleTime { set; get; } = null;
     }
 
     /// <summary>
@@ -100,13 +120,20 @@
     /// </summary>
     public class Result
     {
+
+        public IC ic { get; set; }
+
+        public WORK work { get; set; }
+
+        public R r { set; get; }
+
+        public DipSW dipSw { set; get; }
+
         public Result()
         {
             ic = new IC();
             work = new WORK();
             r = new R();
-            diode = new Diode();
-            led = new LED();
         }
         /// <summary>
         /// 検査コードにOKが返ってきたときに検査結果全てにOKを入れる
@@ -118,10 +145,7 @@
             ic = new IC(result);
             work = new WORK(result);
             r = new R(result);
-            diode = new Diode(result);
-            tr = new TR(true);
             this.dipSw = new DipSW(true);
-            led = new LED(result);
         }
 
         /// <summary>
@@ -130,6 +154,7 @@
         /// <param name="errCodes"></param>
         public Result(List<string> errCodes)
         {
+
             //パーツごとに、エラー項目の一覧を管理する(エラー項目のリスト、それらをまとめる配列)
             List<int>[] errors = new List<int>[(int)Parameters.Parts.ALL_OK];
             foreach (var e in errCodes)
@@ -159,12 +184,6 @@
             else
                 r = new R(errors[(int)Parameters.Parts.RESISTER]);
 
-            //トランジスタの項目の設定
-            if (errors[(int)Parameters.Parts.TR] == null)
-                tr = new TR(true);
-            else
-                tr = new TR(errors[(int)Parameters.Parts.TR]);
-
             //DIPスイッチの項目の設定
             if (errors[(int)Parameters.Parts.DIPSW] == null)
                 dipSw = new DipSW(true);
@@ -174,33 +193,10 @@
                 dipSw = new DipSW((byte)b);
             }
 
-            //LEDの項目設定
-            if (errors[(int)Parameters.Parts.LED] == null)
-                led = new LED(true);
-            else
-                led = new LED(errors[(int)Parameters.Parts.LED]);
-
-            //ダイオードの項目設定
-            if (errors[(int)Parameters.Parts.DIODE] == null)
-                diode = new Diode(true);
-            else
-                diode = new Diode(errors[(int)Parameters.Parts.DIODE]);
         }
 
 
-        public IC ic { get; set; }
 
-        public WORK work { get; set; }
-
-        public R r { set; get; }
-
-        public Diode diode { set; get; }
-
-        public LED led { set; get; }
-
-        public TR tr { set; get; }
-
-        public DipSW dipSw { set; get; }
 
         /// <summary>
         /// ICの検査結果を表す構造体
@@ -304,13 +300,16 @@
         /// </summary>
         public struct R
         {
-            public R() { Array.Fill(results, Result_chars.NO_CHECK); }
 
             public R(bool result)
             {
                 if (result)
                 {
-                    Array.Fill(results, Result_chars.OK);
+                    this.r05 = Result_chars.OK;
+                    this.r10 = Result_chars.OK;
+                    this.r11 = Result_chars.OK;
+                    this.r12 = Result_chars.OK;
+                    this.r18 = Result_chars.OK;
                     this.allResult = Result_chars.OK;
                 }
             }
@@ -319,16 +318,13 @@
             {
                 foreach (var e in errors)
                 {
-                    if (e % 2 == 0)
+                    switch(e)
                     {
-                        results[e / 2] = Result_chars.NO_GOOD;
-                        if (allResult == Result_chars.OK)
-                            allResult = Result_chars.NO_GOOD;
-                    }
-                    else
-                    {
-                        allResult = Result_chars.NG;
-                        results[e / 2] = Result_chars.NG;
+                        case 0:r05 = Result_chars.NG; break;
+                        case 1:r10 = Result_chars.NG; break;
+                        case 2:r11 = Result_chars.NG; break;
+                        case 3:r12 = Result_chars.NG; break;
+                        case 4:r18 = Result_chars.NG; break;
                     }
                 }
             }
@@ -336,51 +332,16 @@
             /// 
             /// </summary>
             public char allResult { set; get; } = Result_chars.NO_CHECK;
-            /// <summary>
-            /// 抵抗(0～14の15個)の結果を配列で格納
-            /// </summary>
-            public char[] results { set; get; } = new char[15];
+
+            public char r05 { set; get; } = Result_chars.NO_CHECK;
+            public char r10 { set; get; } = Result_chars.NO_CHECK;
+            public char r11 { set; get; } = Result_chars.NO_CHECK;
+            public char r12 { set; get; } = Result_chars.NO_CHECK;
+            public char r18 { set; get; } = Result_chars.NO_CHECK;
+
+
         }
 
-        /// <summary>
-        /// トランジスタの検査結果を表す構造体
-        /// </summary>
-        public struct TR
-        {
-            public TR(bool result)
-            {
-                if (result)
-                {
-                    allResult = Result_chars.OK;
-                    dir = Result_chars.OK;
-                    is_OK = Result_chars.OK;
-                }
-            }
-
-            public TR(List<int> errors) : this(true)
-            {
-                allResult = Result_chars.OK;
-                foreach (int e in errors)
-                {
-                    switch (e)
-                    {
-                        case 0: dir = Result_chars.NG; break;
-                        case 1: is_OK = Result_chars.NG; break;
-                        default: allResult = Result_chars.NO_CHECK; break;
-                    }
-                }
-            }
-
-            public char allResult { set; get; } = Result_chars.NO_CHECK;
-            /// <summary>
-            /// トランジスタの向きが正しいかどうか
-            /// </summary>
-            public char dir { set; get; } = Result_chars.NO_CHECK;
-            /// <summary>
-            /// トランジスタが正しく実装されているかどうか
-            /// </summary>
-            public char is_OK { set; get; } = Result_chars.NO_CHECK;
-        }
 
         /// <summary>
         /// DIPスイッチの検査結果を表す構造体
@@ -409,104 +370,5 @@
             public string? pattern { set; get; }
         }
 
-        /// <summary>
-        /// LEDの検査結果を表す構造体
-        /// </summary>
-        public struct LED
-        {
-            public LED(bool result)
-            {
-                this.allResult = Result_chars.OK;
-                this.redDir = Result_chars.OK;
-                this.greenDir = Result_chars.OK;
-                this.whiteDir = Result_chars.OK;
-                this.redHave = Result_chars.OK;
-                this.greenHave = Result_chars.OK;
-                this.whiteHave = Result_chars.OK;
-            }
-
-            public LED(List<int> code) : this(true)
-            {
-                allResult = Result_chars.NG;
-                foreach (var e in code)
-                {
-                    switch (e)
-                    {
-                        case 0: this.redDir = Result_chars.NG; break;
-                        case 1: this.redHave = Result_chars.NG; break;
-                        case 2: this.greenDir = Result_chars.NG; break;
-                        case 3: this.greenHave = Result_chars.NG; break;
-                        case 4: this.whiteDir = Result_chars.NG; break;
-                        case 5: this.whiteHave = Result_chars.NG; break;
-                        default: this.allResult = Result_chars.NO_CHECK; break;
-                    }
-                }
-            }
-            /// <summary>
-            /// 部品自体の合否
-            /// </summary>
-            public char allResult { set; get; }
-            /// <summary>
-            /// 赤色LEDの向きが正しいかどうか
-            /// </summary>
-            public char redDir { set; get; }
-            /// <summary>
-            /// 緑色LEDの向きが正しいかどうか
-            /// </summary>
-            public char greenDir { set; get; }
-            /// <summary>
-            /// 白色LEDの向きが正しいかどうか
-            /// </summary>
-            public char whiteDir { set; get; }
-            /// <summary>
-            /// 赤色LEDが正しく実装されているかどうか
-            /// </summary>
-            public char redHave { set; get; }
-            /// <summary>
-            /// 緑色LEDが正しく実装されているかどうか
-            /// </summary>
-            public char greenHave { set; get; }
-            /// <summary>
-            /// 白色LEDが正しく実装されているかどうか
-            /// </summary>
-            public char whiteHave { set; get; }
-
-        }
-
-        /// <summary>
-        /// シリコンダイオードの検査結果を表す構造体
-        /// </summary>
-        public struct Diode
-        {
-            public Diode(bool result)
-            {
-                this.allResult = Result_chars.OK;
-                this.dir = Result_chars.OK;
-                this.have = Result_chars.OK;
-            }
-
-            public Diode(List<int> codes) : this(true)
-            {
-                this.allResult = Result_chars.NG;
-                foreach (var e in codes)
-                {
-                    switch (e)
-                    {
-                        case 0: this.dir = Result_chars.NG; break;
-                        case 1: this.have = Result_chars.NG; break;
-                        default: this.allResult = Result_chars.NO_CHECK; break;
-                    }
-                }
-            }
-            public char allResult { set; get; }
-            /// <summary>
-            /// ダイオードの向きが正しいかどうか。
-            /// </summary>
-            public char dir { set; get; }
-            /// <summary>
-            /// ダイオードが正しく実装されているかどうか
-            /// </summary>
-            public char have { set; get; }
-        }
     }
 }
