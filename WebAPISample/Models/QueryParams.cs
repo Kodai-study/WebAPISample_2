@@ -78,10 +78,16 @@ namespace WebAPISample.Models
         public string CreateSQL()
         {
             var sql = new StringBuilder("");
+
             /* 期間の最初と最後が指定されていたとき */
             if (IsSetStartTime && IsSetEndTime)
             {
-                sql.Append(" between '");
+                if(endTime.TimeOfDay == TimeSpan.Zero)
+                {
+                    endTime = endTime.AddDays(1);
+                }
+                Console.WriteLine(endTime);
+                sql.Append(" BETWEEN '");
                 sql.Append(startTime);
                 sql.Append("' AND '");
                 sql.Append(endTime);
@@ -95,6 +101,10 @@ namespace WebAPISample.Models
             }
             else if (IsSetEndTime)
             {
+                if (endTime.TimeOfDay == TimeSpan.Zero)
+                {
+                    endTime.AddDays(1);
+                }
                 sql.Append(" <= '");
                 sql.Append(endTime);
                 sql.Append("'");

@@ -55,7 +55,7 @@ namespace WebAPISample.Controllers
                 else
                     sql.Append(" WHERE ");
 
-                sql.Append("Carry_in ");
+                sql.Append("supply ");
                 sql.Append(time.CreateSQL());
             }
 

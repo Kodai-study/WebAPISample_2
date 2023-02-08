@@ -29,7 +29,7 @@ namespace WebAPISample.Controllers
         /// </returns>
         /// 
         [HttpGet]
-        public  List<Times> getTimeStamps(TimeParams timeParams)
+        public  List<Times> getTimeStamps([FromQuery]TimeParams timeParams)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
@@ -37,7 +37,7 @@ namespace WebAPISample.Controllers
 
             if (timeParams)
             {
-                sql.Append(" WHERE Carry_in ");
+                sql.Append(" WHERE supply ");
                 sql.Append(timeParams.CreateSQL());
             }
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))

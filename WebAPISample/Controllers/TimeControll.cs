@@ -39,7 +39,7 @@ namespace WebAPISample.Controllers
 
             if (timeParams)
             {
-                sql.Append(" WHERE Carry_in ");
+                sql.Append(" WHERE supply ");
                 sql.Append(timeParams.CreateSQL());
             }
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
