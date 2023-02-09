@@ -1,6 +1,6 @@
-﻿namespace WebAPISample.Models
+﻿namespace WebAPISample.Modules
 {
-
+    using WebAPISample.Modules;
     using ONE = Char;
     /// <summary>
     /// 検査情報を表すクラス
@@ -62,13 +62,13 @@
             this.startTime = startTime;
         }
 
-        public CheckResult(int workID, DateTime startTime, DateTime? endTime ,List<string> errCodes)
+        public CheckResult(int workID, DateTime startTime, DateTime? endTime, List<string> errCodes)
         {
             this.startTime = startTime;
             this.workID = workID;
             this.result = new Result(errCodes);
-            if(endTime != null)
-            this.cycleTime = endTime - startTime;
+            if (endTime != null)
+                this.cycleTime = endTime - startTime;
         }
 
         public CheckResult(int workID, DateTime startTime, DateTime? endTime, bool allok)
@@ -318,13 +318,13 @@
             {
                 foreach (var e in errors)
                 {
-                    switch(e)
+                    switch (e)
                     {
-                        case 0:r05 = Result_chars.NG; break;
-                        case 1:r10 = Result_chars.NG; break;
-                        case 2:r11 = Result_chars.NG; break;
-                        case 3:r12 = Result_chars.NG; break;
-                        case 4:r18 = Result_chars.NG; break;
+                        case 0: r05 = Result_chars.NG; break;
+                        case 1: r10 = Result_chars.NG; break;
+                        case 2: r11 = Result_chars.NG; break;
+                        case 3: r12 = Result_chars.NG; break;
+                        case 4: r18 = Result_chars.NG; break;
                     }
                 }
             }

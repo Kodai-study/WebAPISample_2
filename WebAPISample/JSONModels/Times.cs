@@ -1,6 +1,6 @@
-﻿using static WebAPISample.Models.Result;
+﻿using static WebAPISample.Modules.Result;
 
-namespace WebAPISample.Models
+namespace WebAPISample.Modules
 {
     /// <summary>
     /// サイクルタイムを、工程ごとの時刻で表示させるときの表示データ

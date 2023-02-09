@@ -1,4 +1,4 @@
-﻿namespace WebAPISample.Models
+﻿namespace WebAPISample.Modules
 {
     /// <summary>
     /// 作業の期間で表示するときに、その時間を計算してデータを作成する

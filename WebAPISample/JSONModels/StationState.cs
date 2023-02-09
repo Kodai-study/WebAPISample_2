@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.IO.MemoryMappedFiles;
 
-namespace WebAPISample.Models
+namespace WebAPISample.Modules
 {
     public class StationState
     {

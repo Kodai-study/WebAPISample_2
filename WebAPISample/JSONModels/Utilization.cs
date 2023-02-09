@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.IO.MemoryMappedFiles;
-using WebAPISample.Models;
+using WebAPISample.Modules;
 
-namespace WebAPISample.Controllers
+namespace WebAPISample.Modules
 {
     public class Utilization
     {
@@ -29,7 +29,7 @@ namespace WebAPISample.Controllers
                 }
                 else if (changeData.Item1.Equals(UtilizationControll.STATECODE_END))
                 {
-                    if(startTime.Equals(DateTime.MinValue))
+                    if (startTime.Equals(DateTime.MinValue))
                     {
                         Console.WriteLine("ロボットのストップ前にスタートがかかった");
                         return;

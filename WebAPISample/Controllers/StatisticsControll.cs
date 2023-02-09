@@ -2,15 +2,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.Text;
-using WebAPISample.Models;
+using WebAPISample.Modules;
 
-namespace WebAPISample.Controllers
+namespace WebAPISample.Modules
 {
     [Route("api/statistics")]
     [ApiController]
-    public class Statistics : ControllerBase
+    public class StatisticsControll : ControllerBase
     {
-        
+
         [HttpGet]
         public void Get([FromQuery] TimeParams timeSearch)
         {
@@ -38,11 +38,6 @@ namespace WebAPISample.Controllers
                 }
             }
 
-            //var date_sql = "SELECT YMD,scan,OK,ave_temp,ave_hun,ave_illum,ave_cyctime,max_cyctime,min_cyctime FROM View_DOK";
-            
-            //var all_sql = "SELECT SUM(scan) AS al,SUM(OK) AS ok,100.0 * SUM(OK) / SUM(scan) FROM View_DOK";
-
-            
         }
     }
 }

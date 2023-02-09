@@ -2,9 +2,9 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.Text;
-using WebAPISample.Models;
+using WebAPISample.Modules;
 
-namespace WebAPISample.Controllers
+namespace WebAPISample.Modules
 {
     /// <summary>
     /// 結果を表すJSONを作成するクラス。
@@ -39,11 +39,11 @@ namespace WebAPISample.Controllers
                 isWhere = true;
                 if (resultsort.Equals("OK"))
                 {
-                    sql.Append(" WHERE result_Code = 'OK   '");
+                    sql.Append(" WHERE result_Code = 'OK  '");
                 }
                 else if (resultsort.Equals("NG"))
                 {
-                    sql.Append(" WHERE not result_Code = 'OK   '");
+                    sql.Append(" WHERE not result_Code = 'OK  '");
                 }
             }
 

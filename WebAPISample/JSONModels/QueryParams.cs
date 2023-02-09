@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
-namespace WebAPISample.Models
+namespace WebAPISample.Modules
 {
     /// <summary>
     /// 時間に関するクエリを管理するクラス
@@ -44,7 +44,7 @@ namespace WebAPISample.Models
         {
             return tm.startTime != DateTime.MinValue || tm.endTime != DateTime.MinValue;
         }
-        
+
         /// <summary>
         /// 期間の初めの時間を指定するパラメータがあるかどうか
         /// </summary>
@@ -82,7 +82,7 @@ namespace WebAPISample.Models
             /* 期間の最初と最後が指定されていたとき */
             if (IsSetStartTime && IsSetEndTime)
             {
-                if(endTime.TimeOfDay == TimeSpan.Zero)
+                if (endTime.TimeOfDay == TimeSpan.Zero)
                 {
                     endTime = endTime.AddDays(1);
                 }

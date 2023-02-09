@@ -3,9 +3,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.Extensions.Primitives;
 using System.Text;
-using WebAPISample.Models;
+using WebAPISample.Modules
+    ;
 
-namespace WebAPISample.Controllers
+namespace WebAPISample.Modules
 {
 
     /// <summary>
@@ -66,7 +67,5 @@ namespace WebAPISample.Controllers
 
             }
         }
-
-
     }
 }
