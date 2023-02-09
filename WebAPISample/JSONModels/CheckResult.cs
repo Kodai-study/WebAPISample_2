@@ -1,5 +1,6 @@
-﻿namespace WebAPISample.Modules
+﻿namespace WebAPISample.JSONModels
 {
+    using WebAPISample.JSONModels;
     using WebAPISample.Modules;
     using ONE = Char;
     /// <summary>

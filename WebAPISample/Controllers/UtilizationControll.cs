@@ -3,9 +3,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.IO.MemoryMappedFiles;
 using System.Text;
-using WebAPISample.Modules;
+using WebAPISample.JSONModels;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.Controllers
 {
     [Route("api/stationUtilization")]
     [ApiController]

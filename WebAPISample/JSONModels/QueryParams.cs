@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.JSONModels
 {
     /// <summary>
     /// 時間に関するクエリを管理するクラス

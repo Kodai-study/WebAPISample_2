@@ -2,7 +2,7 @@
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using WebAPISample.Modules;
+using WebAPISample.JSONModels;
 using static Parameters;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,4 +1,4 @@
-﻿namespace WebAPISample.Modules
+﻿namespace WebAPISample.JSONModels
 {
     public class Statistics
     {

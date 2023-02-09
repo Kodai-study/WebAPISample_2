@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.IO.MemoryMappedFiles;
-using WebAPISample.Modules;
+using WebAPISample.Controllers;
+using WebAPISample.JSONModels;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.JSONModels
 {
     public class Utilization
     {

@@ -2,9 +2,9 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.Text;
-using WebAPISample.Modules;
+using WebAPISample.JSONModels;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.Controllers
 {
     /// <summary>
     /// 結果を表すJSONを作成するクラス。

@@ -3,10 +3,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.Extensions.Primitives;
 using System.Text;
-using WebAPISample.Modules
-    ;
+using WebAPISample.JSONModels;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.Controllers
 {
 
     /// <summary>

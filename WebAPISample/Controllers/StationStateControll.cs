@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.IO.MemoryMappedFiles;
-using WebAPISample.Modules;
+using WebAPISample.JSONModels;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.Controllers
 {
     [Route("api/stationStatus")]
     [ApiController]

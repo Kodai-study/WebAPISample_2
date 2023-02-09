@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WebAPISample.Modules
+namespace WebAPISample.JSONModels
 {
     public class cs : DbContext
     {
@@ -9,6 +9,6 @@ namespace WebAPISample.Modules
         {
         }
 
-        public DbSet<Modules.cs> Class { get; set; } = default!;
+        public DbSet<JSONModels.cs> Class { get; set; } = default!;
     }
 }
