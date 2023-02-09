@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.Text;
 using WebAPISample.JSONModels;
+using WebAPISample.Query;
 
 namespace WebAPISample.Controllers
 {
@@ -24,7 +25,7 @@ namespace WebAPISample.Controllers
         /// <param name="time"> 検査開始時刻で期間の指定ができる </param>
         /// <returns> CheckResult 検査結果のリスト </returns>
         [HttpGet]
-        public List<CheckResult> Get(string? resultsort, [FromQuery] TimeParams time)
+        public List<CheckResult> Get(string? resultsort, [FromQuery] TimeRangeParams time)
         {
             bool isWhere = false;
             var targetIndexes = new List<int>();   //対象になるワークのID
@@ -43,7 +44,7 @@ namespace WebAPISample.Controllers
                 }
                 else if (resultsort.Equals("NG"))
                 {
-                    sql.Append(" WHERE not result_Code = 'OK  '");
+                    sql.Append(" WHERE (not result_Code = 'OK  ')");
                 }
             }
 

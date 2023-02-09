@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.Text;
-using WebAPISample.JSONModels;
+using WebAPISample.Query;
 
 namespace WebAPISample.Controllers
 {
@@ -12,7 +12,7 @@ namespace WebAPISample.Controllers
     {
 
         [HttpGet]
-        public void Get([FromQuery] TimeParams timeSearch)
+        public void Get([FromQuery] TimeRangeParams timeSearch)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);

@@ -4,6 +4,7 @@ using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.Extensions.Primitives;
 using System.Text;
 using WebAPISample.JSONModels;
+using WebAPISample.Query;
 
 namespace WebAPISample.Controllers
 {
@@ -31,7 +32,7 @@ namespace WebAPISample.Controllers
 
         [HttpGet]
 
-        public List<TimeInterval> getTimeIntervals([FromQuery] TimeParams timeParams)
+        public List<TimeInterval> getTimeIntervals([FromQuery] TimeRangeParams timeParams)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);

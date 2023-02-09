@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
-namespace WebAPISample.JSONModels
+namespace WebAPISample.Query
 {
     /// <summary>
     /// 時間に関するクエリを管理するクラス
     /// </summary>
-    public class TimeParams
+    public class TimeRangeParams
     {
         /// <summary>
         /// クエリネーム:startTime
@@ -40,7 +40,7 @@ namespace WebAPISample.JSONModels
         /// 返してくれる
         /// </summary>
         /// <param name="tm"></param>
-        public static implicit operator bool(TimeParams tm)
+        public static implicit operator bool(TimeRangeParams tm)
         {
             return tm.startTime != DateTime.MinValue || tm.endTime != DateTime.MinValue;
         }

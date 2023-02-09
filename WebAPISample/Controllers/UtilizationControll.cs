@@ -4,6 +4,7 @@ using Microsoft.Extensions.Primitives;
 using System.IO.MemoryMappedFiles;
 using System.Text;
 using WebAPISample.JSONModels;
+using WebAPISample.Query;
 
 namespace WebAPISample.Controllers
 {
@@ -20,7 +21,7 @@ namespace WebAPISample.Controllers
 
 
         [HttpGet]
-        public List<Utilization> Get([FromQuery] TimeParams timeParams)
+        public List<Utilization> Get([FromQuery] TimeRangeParams timeParams)
         {
             List<Utilization> utilizationList = new List<Utilization>();
 
