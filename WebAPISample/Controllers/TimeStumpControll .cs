@@ -63,8 +63,5 @@ namespace WebAPISample.Controllers
                 return times;
             }
         }
-
-
-
     }
 }

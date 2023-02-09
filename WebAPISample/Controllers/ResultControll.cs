@@ -25,7 +25,7 @@ namespace WebAPISample.Controllers
         /// <param name="time"> 検査開始時刻で期間の指定ができる </param>
         /// <returns> CheckResult 検査結果のリスト </returns>
         [HttpGet]
-        public List<CheckResult> Get(string? resultsort, [FromQuery] TimeRangeParams time)
+        public List<CheckResult> Get([FromQuery] ResultSearchParams resultSearchParams, [FromQuery] TimeRangeParams time)
         {
             bool isWhere = false;
             var targetIndexes = new List<int>();   //対象になるワークのID
@@ -35,17 +35,11 @@ namespace WebAPISample.Controllers
                 ("SELECT ID FROM ALL_resultView");
 
             /* 検査結果の合格、不合格で絞るとき */
-            if (resultsort != null)
+            if (resultSearchParams.IsSetParams)
             {
                 isWhere = true;
-                if (resultsort.Equals("OK"))
-                {
-                    sql.Append(" WHERE result_Code = 'OK  '");
-                }
-                else if (resultsort.Equals("NG"))
-                {
-                    sql.Append(" WHERE (not result_Code = 'OK  ')");
-                }
+                sql.Append(" WHERE ");
+                sql.Append(resultSearchParams.getTermsSql());
             }
 
             /* 絞り込みに範囲指定があるとき */
