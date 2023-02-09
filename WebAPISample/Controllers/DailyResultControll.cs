@@ -13,12 +13,14 @@ namespace WebAPISample.Controllers
     {
 
         [HttpGet]
-        public List<DailyResults> Get([FromQuery] TimeParams timeSearch, [FromQuery] RangeKind dateTimeKind)
+        public List<DailyResults> Get([FromQuery] TimeParams timeSearch, [FromQuery] String dateTimeKind)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
 
             String? conditionalSql = null;
+
+            dateTimeKind = dateTimeKind.ToUpper();
 
             if (timeSearch.IsSetParams)
             {
@@ -27,10 +29,10 @@ namespace WebAPISample.Controllers
 
             switch (dateTimeKind)
             {
-                case RangeKind.day: return getStatistics_Daily(conditionalSql);
-                case RangeKind.week: return getStatistics_Weekly(conditionalSql);
-                case RangeKind.month: return getStatistics_Monthly(conditionalSql);
-                default: goto case RangeKind.day; 
+                case "DAY": return getStatistics_Daily(conditionalSql);
+                case "WEEK": return getStatistics_Weekly(conditionalSql);
+                case "MONTH": return getStatistics_Monthly(conditionalSql);
+                default: goto case "DAY";
             }
 
         }
@@ -38,7 +40,7 @@ namespace WebAPISample.Controllers
         private List<DailyResults> getStatistics_Daily(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
-            StringBuilder get = new StringBuilder("SELECT YMD,scan,OK,ave_temp,ave_hun,ave_illum,ave_cyctime,max_cyctime,min_cyctime FROM View_DOK");
+            StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
@@ -61,7 +63,7 @@ namespace WebAPISample.Controllers
         private List<DailyResults> getStatistics_Weekly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
-            StringBuilder get = new StringBuilder("SELECT YMD,scan,OK,ave_temp,ave_hun,ave_illum,ave_cyctime,max_cyctime,min_cyctime FROM View_DOK");
+            StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
@@ -83,7 +85,7 @@ namespace WebAPISample.Controllers
         private List<DailyResults> getStatistics_Monthly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
-            StringBuilder get = new StringBuilder("SELECT YMD,scan,OK,ave_temp,ave_hun,ave_illum,ave_cyctime,max_cyctime,min_cyctime FROM View_DOK");
+            StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
@@ -106,11 +108,12 @@ namespace WebAPISample.Controllers
 
         private DailyResults createResultsModel(SqlDataReader reader, RangeKind dateRange)
         {
-            DateOnly firstDateOfRange = DateOnly.FromDateTime(reader.GetDateTime(0));
+            DateTime firstDateOfRange = reader.GetDateTime(0).Date;
 
-            DateOnly lastDataOfRange = dateRange switch
+
+            DateTime lastDataOfRange = dateRange switch
             {
-                RangeKind.day => firstDateOfRange.AddDays(1),
+                RangeKind.day => firstDateOfRange,
                 RangeKind.week => firstDateOfRange.AddDays(6),
                 RangeKind.month => firstDateOfRange.AddMonths(1).AddDays(-1),
                 _ => firstDateOfRange
@@ -119,20 +122,20 @@ namespace WebAPISample.Controllers
             return new DailyResults(
 
                             firstDateOfRange,
-                            firstDateOfRange.AddMonths(1).AddDays(-1),
+                            lastDataOfRange,
                             reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1),
-                            reader.GetInt32(1)
+                            reader.GetInt32(2),
+                            reader.GetInt32(3),
+                            reader.GetInt32(4),
+                            reader.GetInt32(5),
+                            reader.GetInt32(6),
+                            reader.GetInt32(7),
+                            reader.GetInt32(8),
+                            reader.GetInt32(9),
+                            reader.GetInt32(10),
+                            reader.GetInt32(11),
+                            reader.GetInt32(13),
+                            reader.GetInt32(14)
                 );
         }
     }

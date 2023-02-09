@@ -2,8 +2,8 @@
 {
     public class DailyResults
     {
-        public DateOnly firstDateOfRange { get; set; }
-        public DateOnly endDateOfRange { get; set; }
+        public DateTime firstDateOfRange { get; set; }
+        public DateTime endDateOfRange { get; set; }
         public int count_Scan { get; set; }
         public int count_Ok { get; set; }
 
@@ -20,7 +20,7 @@
         public int ngCount_Voltage { get; set; }
         public int ngCount_Frequency { get; set; }
 
-        public DailyResults(DateOnly firstDateOfRange, DateOnly endDateOfRange, int count_Scan, int count_Ok,int count_Ng, int ngCount_IC1, int ngCount_IC2, int ngCount_R5, int ngCount_R10, int ngCount_R11, int ngCount_R12, int ngCount_R18, int ngCount_DIPSW, int ngCount_Voltage, int ngCount_Frequency)
+        public DailyResults(DateTime firstDateOfRange, DateTime endDateOfRange, int count_Scan, int count_Ok,int count_Ng, int ngCount_IC1, int ngCount_IC2, int ngCount_R5, int ngCount_R10, int ngCount_R11, int ngCount_R12, int ngCount_R18, int ngCount_DIPSW, int ngCount_Voltage, int ngCount_Frequency)
         {
             this.firstDateOfRange = firstDateOfRange;
             this.endDateOfRange = endDateOfRange;
