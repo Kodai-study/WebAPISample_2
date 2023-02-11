@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Primitives;
 using System.Text;
+using WebAPISample.Data;
 using WebAPISample.JSONModels;
 using WebAPISample.Query;
 
@@ -30,7 +31,7 @@ namespace WebAPISample.Controllers
         [HttpGet]
         public List<DailyResults> Get([FromQuery] TimeRangeParams timeSearch, [FromQuery] String dateTimeKind)
         {
-            StringValues val = new StringValues("*");
+            StringValues val = new("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
 
             String? conditionalSql = null;
@@ -61,17 +62,17 @@ namespace WebAPISample.Controllers
         /// <returns></returns>
         private List<DailyResults> getStatistics_Daily(String? conditionalSql)
         {
-            List<DailyResults> statisticsDataList = new List<DailyResults>();
+            List<DailyResults> statisticsDataList = new ();
             StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
             }
-            using (var command = new SqlCommand(get.ToString(), Parameters.sqlConnection))
-            using (var reader = command.ExecuteReader())
+            using (SqlCommand command = new(get.ToString(), InspectionParameters.sqlConnection))
+            using (SqlDataReader reader = command.ExecuteReader())
             {
                 /* 時刻リストから、返すデータを作成 */
-                List<Times> times = new List<Times>();
+                List<Times> times = new();
                 while (reader.Read())
                 {
                     DailyResults columData = createResultsModel(reader, RangeKind.day);
@@ -92,16 +93,16 @@ namespace WebAPISample.Controllers
         private List<DailyResults> getStatistics_Weekly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
-            StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
+            StringBuilder get = new("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
             }
-            using (var command = new SqlCommand(get.ToString(), Parameters.sqlConnection))
+            using (var command = new SqlCommand(get.ToString(), InspectionParameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
                 /* 時刻リストから、返すデータを作成 */
-                List<Times> times = new List<Times>();
+                List<Times> times = new();
                 while (reader.Read())
                 {
                     DailyResults columData = createResultsModel(reader, RangeKind.week);
@@ -121,17 +122,17 @@ namespace WebAPISample.Controllers
         /// <returns></returns>
         private List<DailyResults> getStatistics_Monthly(String? conditionalSql)
         {
-            List<DailyResults> statisticsDataList = new List<DailyResults>();
-            StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
+            List<DailyResults> statisticsDataList = new();
+            StringBuilder get = new("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
             }
-            using (var command = new SqlCommand(get.ToString(), Parameters.sqlConnection))
+            using (var command = new SqlCommand(get.ToString(), InspectionParameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
                 /* 時刻リストから、返すデータを作成 */
-                List<Times> times = new List<Times>();
+                List<Times> times = new();
                 while (reader.Read())
                 {
                     DailyResults columData = createResultsModel(reader, RangeKind.month);

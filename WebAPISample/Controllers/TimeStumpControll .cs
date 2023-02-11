@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.Extensions.Primitives;
 using System.Text;
+using WebAPISample.Data;
 using WebAPISample.JSONModels;
 using WebAPISample.Query;
 
@@ -32,39 +33,37 @@ namespace WebAPISample.Controllers
         [HttpGet]
         public List<Times> getTimeStamps([FromQuery] TimeRangeParams timeParams)
         {
-            StringValues val = new StringValues("*");
+            StringValues val = new("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM SensorTimeT");
+            StringBuilder sql = new("SELECT * FROM SensorTimeT");
 
             if (timeParams)
             {
                 sql.Append(" WHERE supply ");
                 sql.Append(timeParams.CreateSQL());
             }
-            using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
-            using (var reader = command.ExecuteReader())
+            using SqlCommand command = new(sql.ToString(), InspectionParameters.sqlConnection);
+            using SqlDataReader reader = command.ExecuteReader();
+            /* 時刻リストから、返すデータを作成 */
+            List<Times> times = new();
+            while (reader.Read())
             {
-                /* 時刻リストから、返すデータを作成 */
-                List<Times> times = new List<Times>();
-                while (reader.Read())
+                // 検査開始時刻は、ワークを代表する時刻データで、絶対に必要
+                DateTime startTime = reader.GetDateTime(1);
+
+                // 検査開始時刻を除いた時刻データを代入
+                DateTime?[] timeStumpsArray = new DateTime?[Times.COLUM_NUMBER - 1];
+
+                for (int i = 0; i < timeStumpsArray.Length; i++)
                 {
-                    // 検査開始時刻は、ワークを代表する時刻データで、絶対に必要
-                    var startTime = reader.GetDateTime(1);
-
-                    // 検査開始時刻を除いた時刻データを代入
-                    var timeStumpsArray = new DateTime?[Times.COLUM_NUMBER - 1];
-
-                    for (int i = 0; i < timeStumpsArray.Length; i++)
-                    {
-                        if (reader[i + 2].Equals(DBNull.Value))
-                            timeStumpsArray[i] = null;
-                        else
-                            timeStumpsArray[i] = reader.GetDateTime(i + 2);
-                    }
-                    times.Add(new Times(reader.GetInt32(0), startTime, timeStumpsArray));
+                    if (reader[i + 2].Equals(DBNull.Value))
+                        timeStumpsArray[i] = null;
+                    else
+                        timeStumpsArray[i] = reader.GetDateTime(i + 2);
                 }
-                return times;
+                times.Add(new Times(reader.GetInt32(0), startTime, timeStumpsArray));
             }
+            return times;
         }
     }
 }

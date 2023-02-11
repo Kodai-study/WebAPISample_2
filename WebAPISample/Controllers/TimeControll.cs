@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.Extensions.Primitives;
 using System.Text;
+using WebAPISample.Data;
 using WebAPISample.JSONModels;
 using WebAPISample.Query;
 
@@ -31,9 +32,9 @@ namespace WebAPISample.Controllers
         [HttpGet]
         public List<TimeInterval> getTimeIntervals([FromQuery] TimeRangeParams timeParams)
         {
-            StringValues val = new StringValues("*");
+            StringValues val = new("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM SensorTimeT ");
+            StringBuilder sql = new("SELECT * FROM SensorTimeT ");
 
             /* 時間の範囲指定による絞り込み */
             if (timeParams)
@@ -41,31 +42,28 @@ namespace WebAPISample.Controllers
                 sql.Append(" WHERE supply ");
                 sql.Append(timeParams.CreateSQL());
             }
-            using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
-            using (var reader = command.ExecuteReader())
+            using var command = new SqlCommand(sql.ToString(), InspectionParameters.sqlConnection);
+            using var reader = command.ExecuteReader();
+            /* 時刻リストから、返すデータを作成 */
+            List<TimeInterval> times = new();
+            while (reader.Read())
             {
-                /* 時刻リストから、返すデータを作成 */
-                List<TimeInterval> times = new List<TimeInterval>();
-                while (reader.Read())
+                var start = (DateTime)reader[1];        //検査開始時刻
+                                                        //開始時刻以外のタイムスタンプ
+                var spanTimes = new DateTime?[Times.COLUM_NUMBER - 1];
+
+                for (int i = 0; i < spanTimes.Length; i++)
                 {
-                    var start = (DateTime)reader[1];        //検査開始時刻
-                    //開始時刻以外のタイムスタンプ
-                    var spanTimes = new DateTime?[Times.COLUM_NUMBER - 1];  
-
-                    for (int i = 0; i < spanTimes.Length; i++)
-                    {
-                        if (reader[i + 2].Equals(DBNull.Value))
-                            spanTimes[i] = null;
-                        else
-                            spanTimes[i] = reader.GetDateTime(i + 2);
-                    }
-                    //タイムスタンプのデータから、各工程にかかった時間のデータを作成
-                    Times timeStump = new Times((int)reader[0], start, spanTimes);
-                    times.Add(new TimeInterval(timeStump));
+                    if (reader[i + 2].Equals(DBNull.Value))
+                        spanTimes[i] = null;
+                    else
+                        spanTimes[i] = reader.GetDateTime(i + 2);
                 }
-                return times;
-
+                //タイムスタンプのデータから、各工程にかかった時間のデータを作成
+                Times timeStump = new((int)reader[0], start, spanTimes);
+                times.Add(new TimeInterval(timeStump));
             }
+            return times;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace WebAPISample.JSONModels
 {
+    using WebAPISample.Data;
     using WebAPISample.JSONModels;
     using WebAPISample.Modules;
     using ONE = Char;
@@ -157,10 +158,10 @@
         {
 
             //パーツごとに、エラー項目の一覧を管理する(エラー項目のリスト、それらをまとめる配列)
-            List<int>[] errors = new List<int>[(int)Parameters.Parts.ALL_OK];
+            List<int>[] errors = new List<int>[(int)InspectionParameters.Parts.ALL_OK];
             foreach (var e in errCodes)
             {
-                var val = Parameters.ERROR_CODES[e];
+                var val = InspectionParameters.ERROR_CODES[e];
                 if (errors[(int)val.Item1] == null)
                 {
                     errors[(int)val.Item1] = new List<int>();
@@ -168,29 +169,29 @@
                 errors[(int)val.Item1].Add(val.Item2);
             }
             //ICの項目の設定。エラー項目がなかったらALLOK、そうでなければエラーのリストを渡す
-            if (errors[(int)Parameters.Parts.IC] == null)
+            if (errors[(int)InspectionParameters.Parts.IC] == null)
                 ic = new IC(true);
             else
-                ic = new IC(errors[(int)Parameters.Parts.IC]);
+                ic = new IC(errors[(int)InspectionParameters.Parts.IC]);
 
             //ワークの項目の設定
-            if (errors[(int)Parameters.Parts.WORK] == null)
+            if (errors[(int)InspectionParameters.Parts.WORK] == null)
                 work = new WORK(true);
             else
-                work = new WORK(errors[(int)Parameters.Parts.WORK]);
+                work = new WORK(errors[(int)InspectionParameters.Parts.WORK]);
 
             //抵抗器の項目の設定
-            if (errors[(int)Parameters.Parts.RESISTER] == null)
+            if (errors[(int)InspectionParameters.Parts.RESISTER] == null)
                 r = new R(true);
             else
-                r = new R(errors[(int)Parameters.Parts.RESISTER]);
+                r = new R(errors[(int)InspectionParameters.Parts.RESISTER]);
 
             //DIPスイッチの項目の設定
-            if (errors[(int)Parameters.Parts.DIPSW] == null)
+            if (errors[(int)InspectionParameters.Parts.DIPSW] == null)
                 dipSw = new DipSW(true);
             else
             {
-                int b = (errors[(int)Parameters.Parts.DIPSW])[0];
+                int b = (errors[(int)InspectionParameters.Parts.DIPSW])[0];
                 dipSw = new DipSW((byte)b);
             }
 

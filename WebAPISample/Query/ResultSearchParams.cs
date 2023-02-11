@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
+using WebAPISample.Data;
 
 namespace WebAPISample.Query
 {
@@ -27,7 +28,7 @@ namespace WebAPISample.Query
         ///  表示項目
         /// </summary>
         private readonly List<String> ERROR_CODES =
-            Parameters.ERROR_CODES.Keys.ToList();
+            InspectionParameters.ERROR_CODES.Keys.ToList();
 
         /// <summary>
         ///  不合格になった検査項目による絞り込みの
@@ -67,18 +68,19 @@ namespace WebAPISample.Query
             /* NGになった項目が指定されていた場合、その項目のみを選択して表示する。 */
             if (IsSetNgColums)
             {
-                //TODO検査値の合格値の下限、上限をパラメータ化する
                 if (ERROR_CODES.IndexOf(searchByNGColums) != -1)
                 {
                     return String.Format(" result_Code = '{0}'  ", searchByNGColums);
                 }
                 else if (searchByNGColums.ToUpper() == ("VOLTAGE"))
                 {
-                    return " (Volt BETWEEN 1.55 AND 1.7)";
+                    return String.Format(" (Volt BETWEEN {0} AND {1})",
+                        InspectionParameters.VOLTAGE_MIN,InspectionParameters.VOLTAGE_MAX);
                 }
                 else if (searchByNGColums.ToUpper() == ("FREQENCY"))
                 {
-                    return " (Freq BETWEEN 300 AND 400) ";
+                    return String.Format(" (Freq BETWEEN {0} AND {1}) ",
+                        InspectionParameters.FREQENCY_MIN,InspectionParameters.FREQENCY_MAX);
                 }
                 return "";
             }
