@@ -33,10 +33,14 @@
             if (timeStumps[0] == null)
                 return;
 
-            this.startTime = (DateTime)timeStumps[0];
+            //供給開始時間は必ずデータが存在する
+            this.startTime = timeStump.supply;
 
             for (int i = 1; i < timeStumps.Length; i++)
             {
+                if (timeStumps[i] == null || timeStumps[i - 1] == null)
+                    continue;
+
                 insertTime(i - 1, timeStumps[i] - timeStumps[i - 1]);
             }
 
@@ -49,6 +53,7 @@
         /// <summary>
         ///  検査開始時刻
         ///  搬送コンベアに乗せられた(センサに触れた)時間。
+        ///  
         /// </summary>
         public DateTime startTime { set; get; }
         /// <summary>
@@ -66,6 +71,10 @@
         ///  (1枚目撮影から撮影終了まで)
         /// </summary>
         public TimeSpan? time_functionalStation { get; set; }
+
+        /// <summary>
+        ///  時間を指定する
+        /// </summary>
         public TimeSpan? time_assemblyStation { get; set; }
 
         /// <summary>

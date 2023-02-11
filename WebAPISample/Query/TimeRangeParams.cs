@@ -29,10 +29,7 @@ namespace WebAPISample.Query
         /// </summary>
         public bool IsSetParams
         {
-            get
-            {
-                return startTime != DateTime.MinValue || endTime != DateTime.MinValue;
-            }
+            get { return startTime != DateTime.MinValue || endTime != DateTime.MinValue; }
         }
 
         /// <summary>
@@ -50,10 +47,7 @@ namespace WebAPISample.Query
         /// </summary>
         public bool IsSetStartTime
         {
-            get
-            {
-                return startTime != DateTime.MinValue;
-            }
+            get { return startTime != DateTime.MinValue; }
         }
 
         /// <summary>
@@ -61,10 +55,7 @@ namespace WebAPISample.Query
         /// </summary>
         public bool IsSetEndTime
         {
-            get
-            {
-                return endTime != DateTime.MinValue;
-            }
+            get { return endTime != DateTime.MinValue; }
         }
 
         /// <summary>
@@ -91,23 +82,24 @@ namespace WebAPISample.Query
                 sql.Append(startTime);
                 sql.Append("' AND '");
                 sql.Append(endTime);
-                sql.Append("'");
+                sql.Append('\'');
             }
             else if (IsSetStartTime)
             {
                 sql.Append(" >= '");
                 sql.Append(startTime);
-                sql.Append("'");
+                sql.Append('\'');
             }
             else if (IsSetEndTime)
             {
+                /* 日にちのみが指定されていたときは、選択範囲をその日いっぱいにする */
                 if (endTime.TimeOfDay == TimeSpan.Zero)
                 {
                     endTime.AddDays(1);
                 }
                 sql.Append(" <= '");
                 sql.Append(endTime);
-                sql.Append("'");
+                sql.Append('\'');
             }
             return sql.ToString();
         }

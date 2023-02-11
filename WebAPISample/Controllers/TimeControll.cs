@@ -10,34 +10,32 @@ namespace WebAPISample.Controllers
 {
 
     /// <summary>
-    ///  サイクルタイムの一覧を表す。
-    ///  各動作が行われた時刻を返す
+    ///  工程や、ステーション等の単位で、ワークの検査等に
+    ///  かかった時間を表示するAPI
     /// </summary>
     [Route("api/times")]
     [ApiController]
     public class TimeControll : ControllerBase
     {
         /// <summary>
-        ///  各動作タイミングのタイムスタンプを返す。
+        ///  APIのメインメソッド。
         ///  GETメソッド URL:/api/times
         /// </summary>
-        /// <param name="time"> 
-        ///  検査開始時刻(start)の時間で期間指定ができる 
+        /// <param name="timeParams"> 
+        ///  ワーク搬入の開始時刻の範囲を指定して表示することができる。
         /// </param>
         /// <see cref="Times"/>
         /// <returns>
         ///  検索された時間データ一覧
         /// </returns>
-
-
         [HttpGet]
-
         public List<TimeInterval> getTimeIntervals([FromQuery] TimeRangeParams timeParams)
         {
             StringValues val = new StringValues("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
-            StringBuilder sql = new StringBuilder("SELECT * FROM SensorTimeT");
+            StringBuilder sql = new StringBuilder("SELECT * FROM SensorTimeT ");
 
+            /* 時間の範囲指定による絞り込み */
             if (timeParams)
             {
                 sql.Append(" WHERE supply ");
@@ -50,8 +48,9 @@ namespace WebAPISample.Controllers
                 List<TimeInterval> times = new List<TimeInterval>();
                 while (reader.Read())
                 {
-                    var start = (DateTime)reader[1];
-                    var spanTimes = new DateTime?[Times.COLUM_NUMBER - 1];
+                    var start = (DateTime)reader[1];        //検査開始時刻
+                    //開始時刻以外のタイムスタンプ
+                    var spanTimes = new DateTime?[Times.COLUM_NUMBER - 1];  
 
                     for (int i = 0; i < spanTimes.Length; i++)
                     {
@@ -60,6 +59,7 @@ namespace WebAPISample.Controllers
                         else
                             spanTimes[i] = reader.GetDateTime(i + 2);
                     }
+                    //タイムスタンプのデータから、各工程にかかった時間のデータを作成
                     Times timeStump = new Times((int)reader[0], start, spanTimes);
                     times.Add(new TimeInterval(timeStump));
                 }

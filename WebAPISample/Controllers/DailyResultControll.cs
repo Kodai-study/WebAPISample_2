@@ -7,11 +7,26 @@ using WebAPISample.Query;
 
 namespace WebAPISample.Controllers
 {
+    /// <summary>
+    ///  単位時間ごとの検査数、不合格数などを表示させるAPI
+    /// </summary>
     [Route("api/statistics")]
     [ApiController]
     public class DailyResultControll : ControllerBase
     {
-
+        /// <summary>
+        ///  URLでアクセスした時に呼び出され、データを作成した返す
+        ///  メインの関数
+        /// </summary>
+        /// <param name="timeSearch">
+        ///  表示するデータの期間を指定する。
+        ///  範囲の始めの時間と範囲の終わりの時間を指定
+        /// </param>
+        /// <param name="dateTimeKind">
+        ///  単位時間を、1日:DAY 1週間:WEEK 1か月:MONTH
+        ///  の中から選ぶことができる
+        /// </param>
+        /// <returns></returns>
         [HttpGet]
         public List<DailyResults> Get([FromQuery] TimeRangeParams timeSearch, [FromQuery] String dateTimeKind)
         {
@@ -37,6 +52,13 @@ namespace WebAPISample.Controllers
 
         }
 
+        /// <summary>
+        ///  1日毎の検査結果データを作成して返す。
+        /// </summary>
+        /// <param name="conditionalSql">
+        ///  絞り込みのSQL文の文字列。
+        /// </param>
+        /// <returns></returns>
         private List<DailyResults> getStatistics_Daily(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
@@ -60,6 +82,13 @@ namespace WebAPISample.Controllers
         }
 
 
+        /// <summary>
+        ///  1週間毎の検査結果データを作成して返す。
+        /// </summary>
+        /// <param name="conditionalSql">
+        ///  絞り込みのSQL文の文字列。
+        /// </param>
+        /// <returns></returns>
         private List<DailyResults> getStatistics_Weekly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
@@ -82,6 +111,14 @@ namespace WebAPISample.Controllers
             return statisticsDataList;
         }
 
+
+        /// <summary>
+        ///  1か月毎の検査結果データを作成して返す。
+        /// </summary>
+        /// <param name="conditionalSql">
+        ///  絞り込みのSQL文の文字列。
+        /// </param>
+        /// <returns></returns>
         private List<DailyResults> getStatistics_Monthly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
@@ -105,7 +142,17 @@ namespace WebAPISample.Controllers
         }
 
 
-
+        /// <summary>
+        ///  検査結果データを作成する関数。単位時間の種類によって、
+        ///  期間の始まり、終わりの日付が変わる。
+        /// </summary>
+        /// <param name="reader">
+        ///  データベースのアクセスオブジェクト
+        /// </param>
+        /// <param name="dateRange">
+        ///  単位時間が、1日、1週間、1か月のどれかを選択する
+        /// </param>
+        /// <returns> 単位時間当たりの検査結果データオブジェクト </returns>
         private DailyResults createResultsModel(SqlDataReader reader, RangeKind dateRange)
         {
             DateTime firstDateOfRange = reader.GetDateTime(0).Date;

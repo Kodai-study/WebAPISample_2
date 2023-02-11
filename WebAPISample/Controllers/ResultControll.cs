@@ -16,14 +16,17 @@ namespace WebAPISample.Controllers
     {
 
         /// <summary>
-        ///  GETメソッドで、検査結果の一覧をJSONで返す
+        ///  ワークごとの検査結果、検査時の情報などを返すAPI
         /// </summary>
-        /// <param name="resultsort"> 
-        ///  検査全体の結果が合格("OK")
-        ///  不合格("NG")だけを選択することができる
+        /// <param name="resultSearchParams"> 
+        ///  クエリパラメータ。
+        ///  ワーク自体の検査結果や、検査項目ごとに不合格になったワークを選んで表示することができる。
         /// </param>
-        /// <param name="time"> 検査開始時刻で期間の指定ができる </param>
-        /// <returns> CheckResult 検査結果のリスト </returns>
+        ///   クエリパラメータ。
+        ///   期間を指定して、検査開始時刻が範囲内のワークのみを選んで表示することができる
+        /// <param name="time"></param>
+        /// <returns></returns>
+
         [HttpGet]
         public List<CheckResult> Get([FromQuery] ResultSearchParams resultSearchParams, [FromQuery] TimeRangeParams time)
         {
@@ -34,12 +37,13 @@ namespace WebAPISample.Controllers
             StringBuilder sql = new StringBuilder
                 ("SELECT ID FROM ALL_resultView");
 
+
             /* 検査結果の合格、不合格で絞るとき */
             if (resultSearchParams.IsSetParams)
             {
                 isWhere = true;
                 sql.Append(" WHERE ");
-                sql.Append(resultSearchParams.getTermsSql());
+                sql.Append(resultSearchParams.CreateSQL());
             }
 
             /* 絞り込みに範囲指定があるとき */
@@ -55,7 +59,6 @@ namespace WebAPISample.Controllers
             }
 
             var rList = new List<CheckResult>();
-            //HACK 取ってくるときの設計を変える。出力を全部見て、IDが変わったら書き換え
 
             /* IDを取ってくる */
             using (var command = new SqlCommand(sql.ToString(), Parameters.sqlConnection))
@@ -92,7 +95,7 @@ namespace WebAPISample.Controllers
                         if (!errReader[2].Equals(DBNull.Value))
                             endTime = errReader.GetDateTime(2);
 
-                        /* 検査が全部オッケーだった時の処理 */
+                        /* 検査が全部オッケーだった時、全て検査 */
                         if (checkCode.Equals("OK  "))
                         {
                             rList.Add(new CheckResult(e, startTime, endTime, true));

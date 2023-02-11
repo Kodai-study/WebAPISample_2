@@ -21,7 +21,7 @@ namespace WebAPISample.Controllers
         ///  各動作タイミングのタイムスタンプを返す。
         ///  GETメソッド URL:/api/times
         /// </summary>
-        /// <param name="time"> 
+        /// <param name="timeParams"> 
         ///  検査開始時刻(start)の時間で期間指定ができる 
         /// </param>
         /// <see cref="Times"/>
@@ -48,17 +48,20 @@ namespace WebAPISample.Controllers
                 List<Times> times = new List<Times>();
                 while (reader.Read())
                 {
-                    var start = (DateTime)reader[1];
-                    var spanTimes = new DateTime?[Times.COLUM_NUMBER - 1];
+                    // 検査開始時刻は、ワークを代表する時刻データで、絶対に必要
+                    var startTime = reader.GetDateTime(1);
 
-                    for (int i = 0; i < spanTimes.Length; i++)
+                    // 検査開始時刻を除いた時刻データを代入
+                    var timeStumpsArray = new DateTime?[Times.COLUM_NUMBER - 1];
+
+                    for (int i = 0; i < timeStumpsArray.Length; i++)
                     {
                         if (reader[i + 2].Equals(DBNull.Value))
-                            spanTimes[i] = null;
+                            timeStumpsArray[i] = null;
                         else
-                            spanTimes[i] = reader.GetDateTime(i + 2);
+                            timeStumpsArray[i] = reader.GetDateTime(i + 2);
                     }
-                    times.Add(new Times((int)reader[0], start, spanTimes));
+                    times.Add(new Times(reader.GetInt32(0), startTime, timeStumpsArray));
                 }
                 return times;
             }

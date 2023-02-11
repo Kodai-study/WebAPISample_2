@@ -9,57 +9,87 @@ namespace WebAPISample.Query
     /// </summary>
     public class ResultSearchParams
     {
+        /// <summary>
+        ///  検査項目を指定することで、その項目が不合格になったデータのみを
+        ///  指定して表示する
+        /// </summary>
         [FromQuery(Name = "ng_colum")]
         public String searchByNGColums { get; set; } = "";
 
+        /// <summary>
+        ///  全体の検査結果に対して、OK,NGを指定して
+        ///  絞り込みの後に表示する。
+        /// </summary>
         [FromQuery(Name = "result")]
         public String searchByResult { get; set; } = "";
 
+        /// <summary>
+        ///  表示項目
+        /// </summary>
+        private readonly List<String> ERROR_CODES =
+            Parameters.ERROR_CODES.Keys.ToList();
+
+        /// <summary>
+        ///  不合格になった検査項目による絞り込みの
+        ///  条件が指定されているかどうか
+        /// </summary>
         public bool IsSetNgColums
         {
-            get
-            {
-                return searchByNGColums != null && !searchByNGColums.Equals("");
-            }
+            get { return searchByNGColums != null && searchByNGColums != ""; }
         }
 
+        /// <summary>
+        ///  NG項目による絞り込みが指定されているかどうか
+        /// </summary>
         public bool IsSetTermsResult
         {
-            get { return searchByResult != null && !searchByResult.Equals(""); }
+            get { return searchByResult != null && searchByResult != ""; }
         }
 
-
+        /// <summary>
+        ///  絞り込みの項目が指定されているかどうか
+        /// </summary>
         public bool IsSetParams
         {
             get { return IsSetNgColums || IsSetTermsResult; }
         }
 
-        public String getTermsSql()
+        /// <summary>
+        ///  条件を指定するSQL文を取得する。
+        ///  検査項目と、結果のOK,NGの指定の両方がある場合は、
+        ///  検査項目の指定が優先される
+        /// </summary>
+        /// <returns>
+        ///  WHERE 以降に書くSQL文の文字列。
+        /// </returns>
+        public String CreateSQL()
         {
+            /* NGになった項目が指定されていた場合、その項目のみを選択して表示する。 */
             if (IsSetNgColums)
             {
-                var e = Parameters.ERROR_CODES.Keys;
-                if (e.ToList().IndexOf(searchByNGColums) != -1)
+                //TODO検査値の合格値の下限、上限をパラメータ化する
+                if (ERROR_CODES.IndexOf(searchByNGColums) != -1)
                 {
-                    return String.Format( " result_Code = '{0}'  ", searchByNGColums);
+                    return String.Format(" result_Code = '{0}'  ", searchByNGColums);
                 }
-                else if (searchByNGColums.ToUpper().Equals("VOLTAGE"))
+                else if (searchByNGColums.ToUpper() == ("VOLTAGE"))
                 {
                     return " (Volt BETWEEN 1.55 AND 1.7)";
                 }
-                else if (searchByNGColums.ToUpper().Equals("FREQENCY"))
+                else if (searchByNGColums.ToUpper() == ("FREQENCY"))
                 {
                     return " (Freq BETWEEN 300 AND 400) ";
                 }
                 return "";
             }
+            /* 検査結果が指定されたときは、検査結果がOK,NGかで絞り込みを行う */
             else if (IsSetTermsResult)
             {
-                if (searchByResult.ToUpper().Equals( "OK"))
+                if (searchByResult.ToUpper() == ("OK"))
                 {
                     return " result_Code = 'OK  ' ";
                 }
-                else if (searchByResult.ToUpper().Equals("NG"))
+                else if (searchByResult.ToUpper() == ("NG"))
                 {
                     return " not result_Code = 'OK  ' ";
                 }
