@@ -29,14 +29,21 @@ namespace WebAPISample.Controllers
         /// </param>
         /// <returns></returns>
         [HttpGet]
-        public List<DailyResults> Get([FromQuery] TimeRangeParams timeSearch, [FromQuery] String dateTimeKind)
+        public List<DailyResults> Get([FromQuery] TimeRangeParams timeSearch, [FromQuery] String? dateTimeKind = "DAY")
         {
             StringValues val = new("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
 
             String? conditionalSql = null;
 
-            dateTimeKind = dateTimeKind.ToUpper();
+            if(dateTimeKind != null) {
+                dateTimeKind = dateTimeKind.ToUpper();
+            }
+            else
+            {
+                dateTimeKind = "DEFAULT";
+            }
+            
 
             if (timeSearch.IsSetParams)
             {
@@ -93,7 +100,7 @@ namespace WebAPISample.Controllers
         private List<DailyResults> getStatistics_Weekly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
-            StringBuilder get = new("select * from dbo.SCAN()");
+            StringBuilder get = new("select * from dbo.WEEK()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);
@@ -123,7 +130,7 @@ namespace WebAPISample.Controllers
         private List<DailyResults> getStatistics_Monthly(String? conditionalSql)
         {
             List<DailyResults> statisticsDataList = new();
-            StringBuilder get = new("select * from dbo.SCAN()");
+            StringBuilder get = new("select * from dbo.month()");
             if (conditionalSql != null)
             {
                 get.Append(conditionalSql);

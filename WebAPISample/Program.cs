@@ -7,7 +7,7 @@ using WebAPISample.JSONModels;
 using static WebAPISample.Data.InspectionParameters;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<cs>(options =>
+builder.Services.AddDbContext<SQLDatabaseConText>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("cs") ?? throw new InvalidOperationException("Connection string 'cs' not found.")));
 
 
