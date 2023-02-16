@@ -32,6 +32,8 @@ namespace WebAPISample.Query
             get { return startTime != DateTime.MinValue || endTime != DateTime.MinValue; }
         }
 
+
+
         /// <summary>
         /// このクラスをbool型に変更すると、パラメータが存在するかどうかを
         /// 返してくれる
