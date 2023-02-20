@@ -29,7 +29,7 @@ namespace WebAPISample.Controllers
         /// <returns></returns>
 
         [HttpGet]
-        public List<CheckResult> Get([FromQuery] ResultSearchParams resultSearchParams, [FromQuery] TimeRangeParams time)
+        public List<CheckResult> Get([FromQuery] ResultSearchParams resultSearchParams, [FromQuery] TimeRangeParams time, [FromQuery] SortParams sortParams)
         {
             bool isWhere = false;
             var targetIndexes = new List<int>();   //対象になるワークのID
@@ -56,6 +56,8 @@ namespace WebAPISample.Controllers
                 sql.Append(" Supply ");
                 sql.Append(time.CreateSQL());
             }
+
+            sql.Append(sortParams.CreateSQL("Supply", "DESC"));
 
             var rList = new List<CheckResult>();
 

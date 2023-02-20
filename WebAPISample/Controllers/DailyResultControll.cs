@@ -47,7 +47,7 @@ namespace WebAPISample.Controllers
 
             if (timeSearch.IsSetParams)
             {
-                conditionalSql = " WHERE Supply " + timeSearch.CreateSQL();
+                conditionalSql = timeSearch.CreateSQL();
             }
 
             switch (dateTimeKind)
@@ -73,6 +73,7 @@ namespace WebAPISample.Controllers
             StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
+                get.Append(" WHERE YMD ");
                 get.Append(conditionalSql);
             }
 
@@ -107,6 +108,7 @@ namespace WebAPISample.Controllers
             StringBuilder get = new("select * from dbo.WEEK()");
             if (conditionalSql != null)
             {
+                get.Append(" WHERE W ");
                 get.Append(conditionalSql);
             }
            
@@ -139,6 +141,7 @@ namespace WebAPISample.Controllers
             StringBuilder get = new("select * from dbo.month()");
             if (conditionalSql != null)
             {
+                get.Append(" WHERE M ");
                 get.Append(conditionalSql);
             }
 
@@ -205,7 +208,7 @@ namespace WebAPISample.Controllers
         {
             String defaultSortMethod = "DESC";
 
-            if (sortParams.sortColum.ToUpper() == "DATE")
+            if (sortParams.sortColum.ToUpper() == "DATE" || sortParams.sortColum == null || sortParams.sortColum == "")
             {
                 sortParams.sortColum = dateColumName;
                 return sortParams.CreateSQL(dateColumName, defaultSortMethod);
