@@ -65,6 +65,11 @@ namespace WebAPISample.Query
         /// </returns>
         public String CreateSQL()
         {
+            if(searchByNGColums.Length == 3)
+            {
+                searchByNGColums += " ";
+            }
+
             /* NGになった項目が指定されていた場合、その項目のみを選択して表示する。 */
             if (IsSetNgColums)
             {
@@ -74,7 +79,7 @@ namespace WebAPISample.Query
                 }
                 else if (searchByNGColums.ToUpper() == ("VOLTAGE"))
                 {
-                    return String.Format(" (Volt BETWEEN {0} AND {1})",
+                    return String.Format(" (Volt BETWEEN {0} AND {1}) ",
                         InspectionParameters.VOLTAGE_MIN,InspectionParameters.VOLTAGE_MAX);
                 }
                 else if (searchByNGColums.ToUpper() == ("FREQENCY"))
@@ -82,7 +87,7 @@ namespace WebAPISample.Query
                     return String.Format(" (Freq BETWEEN {0} AND {1}) ",
                         InspectionParameters.FREQENCY_MIN,InspectionParameters.FREQENCY_MAX);
                 }
-                return "";
+                return String.Format(" result_Code LIKE '{0}%'  ", searchByNGColums);
             }
             /* 検査結果が指定されたときは、検査結果がOK,NGかで絞り込みを行う */
             else if (IsSetTermsResult)

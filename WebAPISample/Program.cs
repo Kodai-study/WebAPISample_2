@@ -1,4 +1,4 @@
-﻿//#define debug
+﻿#define debug
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

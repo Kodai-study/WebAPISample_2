@@ -53,7 +53,7 @@ namespace WebAPISample.Controllers
                 else
                     sql.Append(" WHERE ");
 
-                sql.Append("supply ");
+                sql.Append(" Supply ");
                 sql.Append(time.CreateSQL());
             }
 
