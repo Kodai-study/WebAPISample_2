@@ -84,6 +84,8 @@ namespace WebAPISample.Controllers
                 using SqlDataReader errReader = errCommand.ExecuteReader();
                 DateTime startTime = DateTime.MinValue;
                 DateTime? endTime = null;
+                float voltage = -1;
+                int frequency = -1;
                 if (errReader.Read())
                 {
                     /* 1行目のデータから、ワークの検査情報を取ってくる */
@@ -94,10 +96,15 @@ namespace WebAPISample.Controllers
                     if (!errReader[2].Equals(DBNull.Value))
                         endTime = errReader.GetDateTime(2);
 
+                    if (!errReader[3].Equals(DBNull.Value))
+                        voltage = (float)errReader.GetDouble(3);
+                    if (!errReader[4].Equals(DBNull.Value))
+                        frequency = (int)errReader.GetDouble(4);
+
                     /* 検査が全部オッケーだった時、全て検査 */
                     if (checkCode.Equals("OK  "))
                     {
-                        rList.Add(new CheckResult(e, startTime, endTime, true));
+                        rList.Add(new CheckResult(e, startTime, endTime, true,new FunctionalInspectionResult(voltage,frequency)));
                         continue;
                     }
                     errList.Add(errReader.GetString(5));
@@ -107,7 +114,7 @@ namespace WebAPISample.Controllers
                 {
                     errList.Add(errReader.GetString(5));
                 }
-                rList.Add(new CheckResult(e, startTime, endTime, errList));
+                rList.Add(new CheckResult(e, startTime, endTime, errList, new FunctionalInspectionResult(voltage, frequency)));
             }
             return rList;
         }

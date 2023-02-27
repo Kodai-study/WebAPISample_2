@@ -17,7 +17,12 @@ namespace WebAPISample.JSONModels
         {
             this.voltage_value = voltage_value;
             this.frequency_value = frequency_value;
-            if (voltage_value >= 1.5 && voltage_value <= 2.5)
+
+            if(voltage_result < 0)
+            {
+                voltage_result = Result_chars.NO_CHECK;
+            }
+            else if (voltage_value >= 1.55 && voltage_value <= 1.7)
             {
                 voltage_result = Result_chars.OK;
             }
@@ -26,7 +31,11 @@ namespace WebAPISample.JSONModels
                 voltage_result = Result_chars.NG;
             }
 
-            if (frequency_value >= 300 && frequency_value <= 400)
+            if (frequency_result < 0)
+            {
+                frequency_result = Result_chars.NO_CHECK;
+            }
+            else if (frequency_value >= 300 && frequency_value <= 400)
             {
                 frequency_result = Result_chars.OK;
             }

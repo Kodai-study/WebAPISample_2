@@ -29,7 +29,7 @@
 
 
 
-        public CheckResult(int workID, DateTime startTime, DateTime? endTime, List<string> errCodes)
+        public CheckResult(int workID, DateTime startTime, DateTime? endTime, List<string> errCodes,FunctionalInspectionResult functionResult)
         {
             this.startTime = startTime;
             this.workID = workID;
@@ -37,9 +37,10 @@
             AllResult = Result_chars.NG;
             if (endTime != null)
                 this.cycleTime = endTime - startTime;
+            this.result_functionalInspection = functionResult;
         }
 
-        public CheckResult(int workID, DateTime startTime, DateTime? endTime, bool allok)
+        public CheckResult(int workID, DateTime startTime, DateTime? endTime, bool allok, FunctionalInspectionResult functionResult)
         {
             this.startTime = startTime;
             this.workID = workID;
@@ -47,6 +48,8 @@
             AllResult = Result_chars.OK;
             if (endTime != null)
                 this.cycleTime = endTime - startTime;
+
+            this.result_functionalInspection = functionResult;
         }
 
         /// <summary>
@@ -79,6 +82,8 @@
         /// 検査結果を表すクラス
         /// </summary>
         public VisualInspectionResult? result_visualInspection { set; get; } = null;
+
+        public FunctionalInspectionResult? result_functionalInspection { set; get; } = null;
 
         public TimeSpan? cycleTime { set; get; } = null;
     }
