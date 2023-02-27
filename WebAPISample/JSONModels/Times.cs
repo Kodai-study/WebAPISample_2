@@ -1,6 +1,4 @@
-﻿using static WebAPISample.JSONModels.Result;
-
-namespace WebAPISample.JSONModels
+﻿namespace WebAPISample.JSONModels
 {
     /// <summary>
     /// サイクルタイムを、ステーションへの搬入、搬出時間で表したモデル
