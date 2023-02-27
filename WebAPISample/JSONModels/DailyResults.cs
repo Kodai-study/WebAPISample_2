@@ -34,6 +34,9 @@
         /// </summary>
         public int count_Ng { get; set; }
 
+
+        public float defectRate { get; set; }
+
         /// <summary>
         ///  外観検査で、IC1の項目で不合格だったワークの個数
         /// </summary>
@@ -74,6 +77,10 @@
             this.ngCount_DIPSW = ngCount_DIPSW;
             this.ngCount_Voltage = ngCount_Voltage;
             this.ngCount_Frequency = ngCount_Frequency;
+            if (count_Ok == 0)
+                this.defectRate = 0f;
+            else
+                this.defectRate = ((float)count_Ok / count_Scan) * 100;
         }
     }
 }

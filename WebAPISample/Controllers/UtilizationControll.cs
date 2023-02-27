@@ -5,6 +5,7 @@ using System.IO.MemoryMappedFiles;
 using System.Text;
 using WebAPISample.Data;
 using WebAPISample.JSONModels;
+using WebAPISample.Modules;
 using WebAPISample.Query;
 
 namespace WebAPISample.Controllers
@@ -31,7 +32,7 @@ namespace WebAPISample.Controllers
         /// <param name="timeParams"></param>
         /// <returns></returns>
         [HttpGet]
-        public List<Utilization> Get([FromQuery] TimeRangeParams timeParams)
+        public List<Utilization> Get([FromQuery] TimeRangeParams timeParams, [FromQuery]SortParams sortParams)
         {
             List<Utilization> utilizationList = new();
             StringValues val = new("*");
@@ -41,9 +42,11 @@ namespace WebAPISample.Controllers
 
             if (timeParams)
             {
-                sql.Append(" WHERE supply ");
+                sql.Append(" WHERE time ");
                 sql.Append(timeParams.CreateSQL());
             }
+
+
             using SqlCommand command = new(sql.ToString(), InspectionParameters.sqlConnection);
             using SqlDataReader reader = command.ExecuteReader();
             /* 状態変化の時刻と、変化後の状態のペアのリスト */
@@ -75,6 +78,31 @@ namespace WebAPISample.Controllers
                     new Tuple<String, DateTime>(reader.GetString(0), reader.GetDateTime(1)));
             }
             utilizationList.Add(new Utilization(currentDate, stateChangeTimes));
+
+
+            if (sortParams.IsSetAnyParams)
+            {
+                if (sortParams.sortColum.ToUpper() == "DATE")
+                {
+                    if (sortParams.sortingMethod.ToUpper() == "ASC")
+                        utilizationList.Sort(new UtilizationComparer_DateAsc());
+                    else
+                        utilizationList.Sort(new UtilizationComparer_DateDesc());
+                }
+                else if (sortParams.sortColum.ToUpper().Contains("OPERATION"))
+                {
+                    if (sortParams.sortingMethod.ToUpper() == "ASC")
+                        utilizationList.Sort(new UtilizationComparer_OperationTimeAsc());
+                    else
+                        utilizationList.Sort(new UtilizationComparer_OperationTimeDesc());
+                }
+                else if(sortParams.sortingMethod == "ASC") {
+                    utilizationList.Sort(new UtilizationComparer_DateAsc());
+                }
+            }else
+            {
+                utilizationList.Sort(new UtilizationComparer_DateDesc());
+            }
             return utilizationList;
         }
     }

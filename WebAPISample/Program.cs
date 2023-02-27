@@ -1,4 +1,4 @@
-﻿#define debug
+﻿//#define debug
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 #if debug
-InspectionParameters.Init("Data Source=RBPC04\\SQLEXPRESS;Initial Catalog=Robot22_2DB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+InspectionParameters.Init("Data Source=tcp:RBPC04,54936;Initial Catalog=Robot22_2DB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 #else
 InspectionParameters.Init();
 #endif

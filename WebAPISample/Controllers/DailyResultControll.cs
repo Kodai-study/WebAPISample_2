@@ -29,7 +29,7 @@ namespace WebAPISample.Controllers
         /// </param>
         /// <returns></returns>
         [HttpGet]
-        public List<DailyResults> Get([FromQuery] TimeRangeParams timeSearch, [FromQuery] String? dateTimeKind = "DAY")
+        public List<DailyResults> Get([FromQuery] TimeRangeParams timeSearch, [FromQuery] SortParams sortParams, [FromQuery] String? dateTimeKind = "DAY")
         {
             StringValues val = new("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
@@ -47,14 +47,14 @@ namespace WebAPISample.Controllers
 
             if (timeSearch.IsSetParams)
             {
-                conditionalSql = " WHERE supply " + timeSearch.CreateSQL();
+                conditionalSql = timeSearch.CreateSQL();
             }
 
             switch (dateTimeKind)
             {
-                case "DAY": return getStatistics_Daily(conditionalSql);
-                case "WEEK": return getStatistics_Weekly(conditionalSql);
-                case "MONTH": return getStatistics_Monthly(conditionalSql);
+                case "DAY": return getStatistics_Daily(conditionalSql,sortParams);
+                case "WEEK": return getStatistics_Weekly(conditionalSql, sortParams);
+                case "MONTH": return getStatistics_Monthly(conditionalSql, sortParams);
                 default: goto case "DAY";
             }
 
@@ -67,14 +67,19 @@ namespace WebAPISample.Controllers
         ///  絞り込みのSQL文の文字列。
         /// </param>
         /// <returns></returns>
-        private List<DailyResults> getStatistics_Daily(String? conditionalSql)
+        private List<DailyResults> getStatistics_Daily(String? conditionalSql, SortParams sortParams)
         {
             List<DailyResults> statisticsDataList = new ();
             StringBuilder get = new StringBuilder("select * from dbo.SCAN()");
             if (conditionalSql != null)
             {
+                get.Append(" WHERE YMD ");
                 get.Append(conditionalSql);
             }
+
+
+            get.Append(getSortSQL(sortParams, "YMD"));
+
             using (SqlCommand command = new(get.ToString(), InspectionParameters.sqlConnection))
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -97,14 +102,17 @@ namespace WebAPISample.Controllers
         ///  絞り込みのSQL文の文字列。
         /// </param>
         /// <returns></returns>
-        private List<DailyResults> getStatistics_Weekly(String? conditionalSql)
+        private List<DailyResults> getStatistics_Weekly(String? conditionalSql, SortParams sortParams)
         {
             List<DailyResults> statisticsDataList = new List<DailyResults>();
             StringBuilder get = new("select * from dbo.WEEK()");
             if (conditionalSql != null)
             {
+                get.Append(" WHERE W ");
                 get.Append(conditionalSql);
             }
+           
+            get.Append(getSortSQL(sortParams,"W"));
             using (var command = new SqlCommand(get.ToString(), InspectionParameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
@@ -127,14 +135,17 @@ namespace WebAPISample.Controllers
         ///  絞り込みのSQL文の文字列。
         /// </param>
         /// <returns></returns>
-        private List<DailyResults> getStatistics_Monthly(String? conditionalSql)
+        private List<DailyResults> getStatistics_Monthly(String? conditionalSql, SortParams sortParams)
         {
             List<DailyResults> statisticsDataList = new();
             StringBuilder get = new("select * from dbo.month()");
             if (conditionalSql != null)
             {
+                get.Append(" WHERE M ");
                 get.Append(conditionalSql);
             }
+
+            get.Append(getSortSQL(sortParams, "M"));
             using (var command = new SqlCommand(get.ToString(), InspectionParameters.sqlConnection))
             using (var reader = command.ExecuteReader())
             {
@@ -149,7 +160,7 @@ namespace WebAPISample.Controllers
             return statisticsDataList;
         }
 
-
+        
         /// <summary>
         ///  検査結果データを作成する関数。単位時間の種類によって、
         ///  期間の始まり、終わりの日付が変わる。
@@ -192,6 +203,35 @@ namespace WebAPISample.Controllers
                             reader.GetInt32(13),
                             reader.GetInt32(14)
                 );
+        }
+        private String getSortSQL(SortParams sortParams, String dateColumName)
+        {
+            String defaultSortMethod = "DESC";
+
+            if (sortParams.sortColum.ToUpper() == "DATE" || sortParams.sortColum == null || sortParams.sortColum == "")
+            {
+                sortParams.sortColum = dateColumName;
+                return sortParams.CreateSQL(dateColumName, defaultSortMethod);
+            }
+            
+            if (sortParams.sortColum.ToUpper() == "PASSRATE")
+                sortParams.sortColum = " IIF(SCAN = 0 OR OK = 0,0,(CONVERT(FLOAT, OK)/SCAN)) ";
+
+            else if (sortParams.sortColum.ToUpper() == "DEFECTRATE")
+            {
+                sortParams.sortColum = " IIF(SCAN = 0 OR OK = 0,0,(CONVERT(FLOAT, OK)/SCAN)) ";
+                defaultSortMethod = "ASC";
+                if (sortParams.IsSetSotringMethod)
+                {
+                    if (sortParams.sortingMethod.ToUpper() == "DESC")
+                        sortParams.sortingMethod = "ASC";
+
+                    else if (sortParams.sortingMethod.ToUpper() == "ASC")
+                        sortParams.sortingMethod = "DESC";
+                }
+            }
+            return sortParams.CreateSQL(dateColumName, defaultSortMethod) +
+                String.Format(",{0} DESC", dateColumName);
         }
     }
 

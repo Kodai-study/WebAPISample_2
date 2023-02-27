@@ -30,7 +30,7 @@ namespace WebAPISample.Controllers
         ///  検索された時間データ一覧
         /// </returns>
         [HttpGet]
-        public List<TimeInterval> getTimeIntervals([FromQuery] TimeRangeParams timeParams)
+        public List<TimeInterval> getTimeIntervals([FromQuery] TimeRangeParams timeParams, [FromQuery]SortParams sortParams)
         {
             StringValues val = new("*");
             this.Response.Headers.Add("Access-Control-Allow-Origin", val);
@@ -42,6 +42,8 @@ namespace WebAPISample.Controllers
                 sql.Append(" WHERE supply ");
                 sql.Append(timeParams.CreateSQL());
             }
+
+            sql.Append(sortParams.CreateSQL("Supply", "DESC"));
             using var command = new SqlCommand(sql.ToString(), InspectionParameters.sqlConnection);
             using var reader = command.ExecuteReader();
             /* 時刻リストから、返すデータを作成 */
