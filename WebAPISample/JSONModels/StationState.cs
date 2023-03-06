@@ -35,11 +35,19 @@ namespace WebAPISample.JSONModels
         public String stationState_Function { get; set; }
         public String stationState_Assembly { get; set; }
         public bool isSystemPause { get; set; }
-        public String systemPauseCause { get; set; }
-        public bool isInspectedJustBefore { get; set; }
+        public bool isVisualInspectedJustBefore { get; set; }
+        public bool isFunctionInspectedJustBefore { get; set; }
         public int resultFrequency { get; set; }
-        public float resultVoltage { get; set; }
+        public int resultVoltage { get; set; }
         public String visualInspectionData { get; set; }
+        private readonly String[] ROBOT_STATE_STR = new string[]
+        {
+            "電源OFF、または通信不可",
+            "運転可能状態",
+            "個別運転状態",
+            "連係動作状態",
+            "異常状態"
+        };
 
         /// <summary>
         ///  PLC監視プログラムから、ステーションごとのワークの個数を取ってきて
@@ -57,25 +65,20 @@ namespace WebAPISample.JSONModels
                 if (accessor.CanRead)
                 {
                     numberOfWork_VisualStation = accessor.ReadInt32(0);
-                    numberOfWork_FunctionalStation = accessor.ReadInt32(1);
-                    numberOfWork_AssemblyStation = accessor.ReadInt32(2);
-                    numberOfOKStock = accessor.ReadInt32(3);
-                    numberOfNGStock = accessor.ReadInt32(4);
-
-
-                    isSystemPause = accessor.ReadBoolean(10);
-                    isInspectedJustBefore = accessor.ReadBoolean(12);
-                    resultFrequency = accessor.ReadInt32(13);
-                    resultVoltage = (float)accessor.ReadDouble(14);
-                    // systemState = accessor.ReadInt32(5);
-                    // stationState_Supply = accessor.ReadInt32(6);
-                    //stationState_Visual = accessor.ReadInt32(7);
-                    //stationState_Function = accessor.ReadInt32(8);
-                    //stationState_Assembly = accessor.ReadInt32(9);
-
-                    //systemPauseCause = accessor.ReadInt32(11);
-                    //visualInspectionData = accessor.ReadInt32(15);
-
+                    numberOfWork_FunctionalStation = accessor.ReadInt32(4);
+                    numberOfWork_AssemblyStation = accessor.ReadInt32(8);
+                    numberOfOKStock = accessor.ReadInt32(12);
+                    numberOfNGStock = accessor.ReadInt32(16);
+                    isSystemPause = accessor.ReadBoolean(20);
+                    isVisualInspectedJustBefore = accessor.ReadBoolean(21);
+                    isFunctionInspectedJustBefore = accessor.ReadBoolean(22);
+                    resultFrequency = accessor.ReadInt32(23);
+                    resultVoltage = accessor.ReadInt32(27);
+                    systemState = ROBOT_STATE_STR[ accessor.ReadInt32(31)];
+                    stationState_Supply = ROBOT_STATE_STR[accessor.ReadInt32(35)];
+                    stationState_Visual = ROBOT_STATE_STR[accessor.ReadInt32(39)];
+                    stationState_Function = ROBOT_STATE_STR[accessor.ReadInt32(43)];
+                    stationState_Assembly = ROBOT_STATE_STR[accessor.ReadInt32(47)];
                 }
                 accessor.Dispose();
                 share_mem.Dispose();
