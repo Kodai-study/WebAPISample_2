@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IO.MemoryMappedFiles;
+﻿using System.IO.MemoryMappedFiles;
 
 namespace WebAPISample.JSONModels
 {
@@ -39,7 +37,8 @@ namespace WebAPISample.JSONModels
         public bool isFunctionInspectedJustBefore { get; set; }
         public int resultFrequency { get; set; }
         public int resultVoltage { get; set; }
-        public String visualInspectionData { get; set; }
+        public String resultVisualInspection { get; set; }
+
         private readonly String[] ROBOT_STATE_STR = new string[]
         {
             "電源OFF、または通信不可",
@@ -47,6 +46,16 @@ namespace WebAPISample.JSONModels
             "個別運転状態",
             "連係動作状態",
             "異常状態"
+        };
+
+        private readonly String[] SYSTEM_STETE_STR = new string[]
+        {
+            "連係動作中",
+            "動作開始待機中",
+            "全ステーション通信可能",
+            "異常状態",
+            "供給停止状態",
+            "個別運転状態"
         };
 
         /// <summary>
@@ -62,40 +71,36 @@ namespace WebAPISample.JSONModels
                 MemoryMappedFile share_mem = MemoryMappedFile.OpenExisting("shared_memory");
                 MemoryMappedViewAccessor accessor = share_mem.CreateViewAccessor();
                 isSuccessConnect = accessor.CanRead;
+                int headPosition = 0;
                 if (accessor.CanRead)
                 {
-                    numberOfWork_VisualStation = accessor.ReadInt32(0);
-                    numberOfWork_FunctionalStation = accessor.ReadInt32(4);
-                    numberOfWork_AssemblyStation = accessor.ReadInt32(8);
-                    numberOfOKStock = accessor.ReadInt32(12);
-                    numberOfNGStock = accessor.ReadInt32(16);
-                    isSystemPause = accessor.ReadBoolean(20);
-                    isVisualInspectedJustBefore = accessor.ReadBoolean(21);
-                    isFunctionInspectedJustBefore = accessor.ReadBoolean(22);
-                    resultFrequency = accessor.ReadInt32(23);
-                    resultVoltage = accessor.ReadInt32(27);
-                    systemState = ROBOT_STATE_STR[ accessor.ReadInt32(31)];
-                    stationState_Supply = ROBOT_STATE_STR[accessor.ReadInt32(35)];
-                    stationState_Visual = ROBOT_STATE_STR[accessor.ReadInt32(39)];
-                    stationState_Function = ROBOT_STATE_STR[accessor.ReadInt32(43)];
-                    stationState_Assembly = ROBOT_STATE_STR[accessor.ReadInt32(47)];
+                    numberOfWork_VisualStation = accessor.ReadInt32(headPosition);
+                    numberOfWork_FunctionalStation = accessor.ReadInt32(headPosition += 4);
+                    numberOfWork_AssemblyStation = accessor.ReadInt32(headPosition += 4);
+                    numberOfOKStock = accessor.ReadInt32(headPosition += 4);
+                    numberOfNGStock = accessor.ReadInt32(headPosition += 4);
+                    isSystemPause = accessor.ReadBoolean(headPosition += 4);
+                    isVisualInspectedJustBefore = accessor.ReadBoolean(headPosition += 1);
+                    isFunctionInspectedJustBefore = accessor.ReadBoolean(headPosition += 1);
+                    resultVisualInspection = accessor.ReadBoolean(headPosition += 1) ? "合格" : "不合格";
+                    resultFrequency = accessor.ReadInt32(headPosition += 1);
+                    resultVoltage = accessor.ReadInt32(headPosition += 4);
+                    systemState = SYSTEM_STETE_STR[accessor.ReadInt32(headPosition += 4)];
+                    stationState_Supply = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
+                    stationState_Visual = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
+                    stationState_Function = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
+                    stationState_Assembly = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
                 }
                 accessor.Dispose();
                 share_mem.Dispose();
             }
             catch
+
             {
                 numberOfWork_VisualStation = -1;
                 numberOfWork_FunctionalStation = -1;
                 numberOfWork_AssemblyStation = -1;
             }
-        }
-
-        public StationState(int numberOfWork_VisualStation, int numberOfWork_FunctionalStation, int numberOfWork_AsseblyStation)
-        {
-            this.numberOfWork_VisualStation = numberOfWork_VisualStation;
-            this.numberOfWork_FunctionalStation = numberOfWork_FunctionalStation;
-            this.numberOfWork_AssemblyStation = numberOfWork_AsseblyStation;
         }
     }
 }
