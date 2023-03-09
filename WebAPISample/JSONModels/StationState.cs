@@ -39,6 +39,8 @@ namespace WebAPISample.JSONModels
         public int resultVoltage { get; set; }
         public String resultVisualInspection { get; set; }
 
+        public static int lastMeomryAddress = -1;
+
         private readonly String[] ROBOT_STATE_STR = new string[]
         {
             "電源OFF、または通信不可",
@@ -90,6 +92,8 @@ namespace WebAPISample.JSONModels
                     stationState_Visual = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
                     stationState_Function = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
                     stationState_Assembly = ROBOT_STATE_STR[accessor.ReadInt32(headPosition += 4)];
+                    if (lastMeomryAddress < 0)
+                        lastMeomryAddress = headPosition;
                 }
                 accessor.Dispose();
                 share_mem.Dispose();
