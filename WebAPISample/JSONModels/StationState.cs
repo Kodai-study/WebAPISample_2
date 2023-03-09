@@ -44,6 +44,7 @@ namespace WebAPISample.JSONModels
         private readonly String[] ROBOT_STATE_STR = new string[]
         {
             "電源OFF、または通信不可",
+            "電源ON",
             "運転可能状態",
             "個別運転状態",
             "連係動作状態",
@@ -98,8 +99,7 @@ namespace WebAPISample.JSONModels
                 accessor.Dispose();
                 share_mem.Dispose();
             }
-            catch
-
+            catch(Exception e)
             {
                 numberOfWork_VisualStation = -1;
                 numberOfWork_FunctionalStation = -1;

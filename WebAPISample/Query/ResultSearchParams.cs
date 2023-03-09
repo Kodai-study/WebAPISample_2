@@ -65,7 +65,7 @@ namespace WebAPISample.Query
         /// </returns>
         public String CreateSQL()
         {
-            if(searchByNGColums.Length == 3)
+            if (searchByNGColums.Length == 3)
             {
                 searchByNGColums += " ";
             }
@@ -80,12 +80,12 @@ namespace WebAPISample.Query
                 else if (searchByNGColums.ToUpper() == ("VOLTAGE"))
                 {
                     return String.Format(" (Volt BETWEEN {0} AND {1}) ",
-                        InspectionParameters.VOLTAGE_MIN,InspectionParameters.VOLTAGE_MAX);
+                        InspectionParameters.VOLTAGE_MIN, InspectionParameters.VOLTAGE_MAX);
                 }
                 else if (searchByNGColums.ToUpper() == ("FREQENCY"))
                 {
                     return String.Format(" (Freq BETWEEN {0} AND {1}) ",
-                        InspectionParameters.FREQENCY_MIN,InspectionParameters.FREQENCY_MAX);
+                        InspectionParameters.FREQENCY_MIN, InspectionParameters.FREQENCY_MAX);
                 }
                 return String.Format(" result_Code LIKE '{0}%'  ", searchByNGColums);
             }
